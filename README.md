@@ -1,7 +1,7 @@
 # View Model Mod
 -----------------
 ### How to use?
-- **Install** the latest version and install [*ImproperUI*](https://github.com/ItziSpyder/ImproperUI/releases) by **ImproperIssues**.
+- **Install the latest version** and install [*ImproperUI*](https://github.com/ItziSpyder/ImproperUI/releases) by **ImproperIssues**.
 - **Press** `v` on your keyboard to open the **GUI**.
 - **Set** the sizes as you want with the sliders.
 --------------------
@@ -16,6 +16,6 @@
 ## Example
 ![hmmm](assets/example.png)
 -----------------
-# BE AWARE THAT YOU MUST TO HAVE THE [***ImproperUI***](https://github.com/ItziSpyder/ImproperUI/releases) LIBRARY SO THIS MOD WILL WORK!
+# BE AWARE THAT YOU MUST TO HAVE THE [**IMPROPERUI**](https://github.com/ItziSpyder/ImproperUI/releases) LIBRARY FOR THE MOD TO WORK!
 ------------------
-### tysm for this mod 🙏
+## tysm for this mod 🙏
