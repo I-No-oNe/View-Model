@@ -16,6 +16,6 @@
 ## Example
 ![hmmm](assets/example.png)
 -----------------
-# BE AWARE THAT YOU MUST TO HAVE THE [**IMPROPERUI**](https://github.com/ItziSpyder/ImproperUI/releases) LIBRARY FOR THE MOD TO WORK!
+# BE AWARE THAT YOU MUST TO HAVE THE [**IMPROPER-UI**](https://github.com/ItziSpyder/ImproperUI/releases) LIBRARY FOR THE MOD TO WORK!
 ------------------
 ## tysm for this mod 🙏

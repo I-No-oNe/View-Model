@@ -9,7 +9,7 @@
 	],
 	"contact": {
 		"homepage": "https://github.com/I-No-oNe",
-		"sources": "https://github.com/I-No-oNe/Model-view"
+		"sources": "https://github.com/I-No-oNe/view-model"
 	},
 	"license": "MIT",
 	"icon": "assets/view-model/icon.png",

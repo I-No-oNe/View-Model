@@ -17,7 +17,7 @@ public class MenuCallbacks implements CallbackListener {
 
     public void onClick(MouseEvent e) {
         if ("check-updates".equals(e.target.getId())) {
-            Util.getOperatingSystem().open("https://github.com/I-No-oNe/Model-view/releases");
+            Util.getOperatingSystem().open("https://github.com/I-No-oNe/view-model/releases");
         }
     }
 
