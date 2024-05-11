@@ -1,0 +1,34 @@
+{
+	"schemaVersion": 1,
+	"id": "view-model",
+	"version": "${version}",
+	"name": "View Model",
+	"description": "A view model mod by I-No-oNe",
+	"authors": [
+		"I-No-oNe"
+	],
+	"contact": {
+		"homepage": "https://github.com/I-No-oNe",
+		"sources": "https://github.com/I-No-oNe/Model-view"
+	},
+	"license": "MIT",
+	"icon": "assets/view-model/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"net.i_no_am.view_model.ViewModel"
+		]
+	},
+	"mixins": [
+		"view-model.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.15.11",
+		"minecraft": "~1.20.4",
+		"java": ">=17",
+		"fabric-api": "*"
+	},
+	"suggests": {
+		"another-mod": "ClickCrystals"
+	}
+}

@@ -1,0 +1,118 @@
+
+div #background {
+    size: 100%
+    background-color: black
+    opacity: 0.1
+}
+
+div #main {
+    size: 300 200
+    background-color: black
+    opacity: 0.5
+    border-radius: 5
+    shadow-distance: 5
+
+    center: both
+
+    div #title {
+        size: 100% 10
+        inner-text: "View model"
+        text-scale: 1.2
+        text-shadow: true
+        text-color: green
+        text-align: center
+        background-color: #00000000
+        margin-top: 7
+    }
+
+    div #config {
+        size: 80% 120%
+        margin-top: 1%
+        child-align: grid
+        grid-columns: 2
+        opacity: 0
+        margin: 10%
+        margin-top: 14%
+
+        div { inner-text: "Rotation X axis"; height: 1; margin-top: 0; }
+        slider -view-model:config.properties:main-rotation-x {
+            min: -70
+            max: 70
+            val: 0.0
+            width: 95%
+        }
+
+        div { inner-text: "Rotation Y axis"; height: 1; margin-top: 0; }
+        slider -view-model:config.properties:main-rotation-y {
+            min: -60
+            max: 60
+            val: 0.0
+            width: 95%
+        }
+
+        div { inner-text: "Rotation Z axis"; height: 1; margin-top: 0; }
+        slider -view-model:config.properties:main-rotation-z {
+            min: -45
+            max: 45
+            val: 0.0
+            width: 95%
+        }
+        div { inner-text: "Position X axis"; height: 1; margin-top: 0; }
+        slider -view-model:config.properties:main-position-x {
+            min: -45
+            max: 45
+            val: 0.0
+            width: 95%
+        }
+
+        div { inner-text: "Position Y axis"; height: 1; margin-top: 0; }
+        slider -view-model:config.properties:main-position-y {
+            min: -45
+            max: 45
+            val: 0.0
+            width: 95%
+        }
+
+        div {}
+        div { inner-text: "Position Z axis"; height: 1; margin-top: 0; }
+        slider -view-model:config.properties:main-position-z {
+            min: -360
+            max: 360
+            val: 0.0
+            width: 95%
+        }
+
+    div {}
+        div {
+            inner-text: "Made By I-No-oNe!"
+            text-align: center
+            text-shadow: true
+            text-color: green
+            height: 10
+            margin-top: 28
+            text-scale: 1.1
+            width: 100%
+            background-color: none
+        }
+        div{}
+            button #check-updates {
+            inner-text: "Check for updates!"
+            margin-top: 50
+            text-scale: 0.8
+            center: horizontal
+            text-color: black
+            background-color: green
+            on-click: handleMouseCallbacks
+            height: 5%
+            width: 100%
+            border-radius: 3
+
+            hover => {
+                padding: 3
+                shadow-distance: 3
+                shadow-color: green
+                border-thickness: 0
+            }
+        }
+    }
+}
