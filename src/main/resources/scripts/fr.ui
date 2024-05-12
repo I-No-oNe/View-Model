@@ -38,7 +38,7 @@ div #main {
         slider -view-model:config.properties:main-rotation-x {
             min: -70
             max: 70
-            val: 0.0
+            val: 0
             width: 95%
         }
 
@@ -46,7 +46,7 @@ div #main {
         slider -view-model:config.properties:main-rotation-y {
             min: -60
             max: 60
-            val: 0.0
+            val: 0
             width: 95%
         }
 
@@ -54,14 +54,14 @@ div #main {
         slider -view-model:config.properties:main-rotation-z {
             min: -45
             max: 45
-            val: 0.0
+            val: 0
             width: 95%
         }
         div { inner-text: "Position X axis"; height: 1; margin-top: 0; }
         slider -view-model:config.properties:main-position-x {
             min: -45
             max: 45
-            val: 0.0
+            val: 0
             width: 95%
         }
 
@@ -69,7 +69,7 @@ div #main {
         slider -view-model:config.properties:main-position-y {
             min: -45
             max: 45
-            val: 0.0
+            val: 0
             width: 95%
         }
 
@@ -78,7 +78,7 @@ div #main {
         slider -view-model:config.properties:main-position-z {
             min: -360
             max: 360
-            val: 0.0
+            val: 0
             width: 95%
         }
 

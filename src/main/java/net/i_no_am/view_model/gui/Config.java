@@ -22,7 +22,7 @@ public class Config implements Global {
     public static double readDouble(String property) {
         var val = read(property);
         if (val == null) {
-            write(property, 1.0, true);
+            write(property, 0.0, true);
             val = read(property);
         }
         return val.get(0).toDouble();

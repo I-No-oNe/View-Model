@@ -24,10 +24,10 @@ public class ViewModel implements ModInitializer, Global {
 	public void onInitialize() {
 		ImproperUIAPI.init(modId, ViewModel.class, screens);
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
-			ViewModelSettings.loadConfigValues();
 			while (BIND.wasPressed()) {
-				ImproperUIAPI.parseAndRunFile(modId, "screen.ui", new MenuCallbacks());
+				ImproperUIAPI.parseAndRunFile(modId, "fr.ui", new MenuCallbacks());
 			}
+			ViewModelSettings.loadConfigValues();
 		});
 	}
 }

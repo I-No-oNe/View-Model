@@ -15,6 +15,9 @@
 	"icon": "assets/view-model/icon.png",
 	"environment": "*",
 	"entrypoints": {
+		"client": [
+			"net.i_no_am.view_model.client.ViewModelClient"
+		],
 		"main": [
 			"net.i_no_am.view_model.ViewModel"
 		]
@@ -23,7 +26,7 @@
 		"view-model.mixins.json"
 	],
 	"depends": {
-		"fabricloader": ">=0.15.11",
+		"fabricloader": ">=0.15.7",
 		"minecraft": "~1.20.4",
 		"java": ">=17",
 		"fabric-api": "*"

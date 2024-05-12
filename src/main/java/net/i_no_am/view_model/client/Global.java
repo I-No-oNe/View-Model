@@ -4,6 +4,6 @@ public interface Global {
 
     String modId = "view-model";
     String[] screens = {
-            "scripts/screen.ui"
+            "scripts/fr.ui"
     };
 }
