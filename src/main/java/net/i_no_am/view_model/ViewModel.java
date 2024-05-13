@@ -22,7 +22,7 @@ public class ViewModel implements ModInitializer, Global {
 
 	@Override
 	public void onInitialize() {
-		ImproperUIAPI.init(modId, ViewModel.class, screens);
+		ImproperUIAPI.init(modId, ViewModel.class,"scripxts/fr.ui");
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			while (BIND.wasPressed()) {
 				ImproperUIAPI.parseAndRunFile(modId, "fr.ui", new MenuCallbacks());
