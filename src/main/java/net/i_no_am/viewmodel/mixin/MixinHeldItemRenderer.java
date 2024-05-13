@@ -1,7 +1,7 @@
-package net.i_no_am.view_model.mixin;
+package net.i_no_am.viewmodel.mixin;
 
-import net.i_no_am.view_model.client.Global;
-import net.i_no_am.view_model.util.ViewModelSettings;
+import net.i_no_am.viewmodel.client.Global;
+import net.i_no_am.viewmodel.util.ViewModelSettings;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.item.HeldItemRenderer;
@@ -21,11 +21,11 @@ public abstract class MixinHeldItemRenderer implements Global {
     public void renderFirstPersonItem(AbstractClientPlayerEntity player, float tickDelta, float pitch, Hand hand, float swingProgress, ItemStack item, float equipProgress, MatrixStack m, VertexConsumerProvider vertexConsumers, int light, CallbackInfo ci) {
         if (hand == Hand.MAIN_HAND) {
             double mainRotX = ViewModelSettings.getMainRotationX();
-            double mainRotY = ViewModelSettings.getMainRotationY();
-            double mainRotZ = ViewModelSettings.getMainRotationZ();
             double mainPosX = ViewModelSettings.getMainPositionX();
-            double mainPosY = ViewModelSettings.getMainPositionY();
+            double mainRotZ = ViewModelSettings.getMainRotationZ();
             double mainPosZ = ViewModelSettings.getMainPositionZ();
+            double mainRotY = ViewModelSettings.getMainRotationY();
+            double mainPosY = ViewModelSettings.getMainPositionY();
 
             m.multiply(RotationAxis.POSITIVE_X.rotationDegrees((float) mainRotX));
             m.multiply(RotationAxis.POSITIVE_Y.rotationDegrees((float) mainRotY));

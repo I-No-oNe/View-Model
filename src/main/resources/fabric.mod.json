@@ -1,37 +1,33 @@
 {
-	"schemaVersion": 1,
-	"id": "view-model",
-	"version": "${version}",
-	"name": "View Model",
-	"description": "A view model mod by I-No-oNe",
-	"authors": [
-		"I-No-oNe"
-	],
-	"contact": {
-		"homepage": "https://github.com/I-No-oNe",
-		"sources": "https://github.com/I-No-oNe/view-model"
-	},
-	"license": "MIT",
-	"icon": "assets/view-model/icon.png",
-	"environment": "*",
-	"entrypoints": {
-		"client": [
-			"net.i_no_am.view_model.client.ViewModelClient"
-		],
-		"main": [
-			"net.i_no_am.view_model.ViewModel"
-		]
-	},
-	"mixins": [
-		"view-model.mixins.json"
-	],
-	"depends": {
-		"fabricloader": ">=0.15.7",
-		"minecraft": "~1.20.4",
-		"java": ">=17",
-		"fabric-api": "*"
-	},
-	"suggests": {
-		"another-mod": "ClickCrystals"
-	}
+  "schemaVersion": 1,
+  "id": "viewmodel",
+  "version": "${version}",
+  "name": "View Model",
+  "description": "A view model mod by I-No-oNe",
+  "authors": [
+    "I-No-oNe"
+  ],
+  "contact": {
+    "homepage": "https://github.com/I-No-oNe",
+    "sources": "https://github.com/I-No-oNe/view-model"
+  },
+  "license": "MIT",
+  "icon": "assets/viewmodel/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+      "net.i_no_am.viewmodel.client.ViewModelClient"
+    ],
+    "main": [
+      "net.i_no_am.viewmodel.ViewModel"
+    ]
+  },
+  "mixins": [
+    "viewmodel.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric": "*",
+    "minecraft": ">=${minecraft_version}"
+  }
 }

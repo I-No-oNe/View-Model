@@ -1,4 +1,3 @@
-
 div #background {
     size: 100%
     background-color: black
@@ -35,7 +34,7 @@ div #main {
         margin-top: 14%
 
         div { inner-text: "Rotation X axis"; height: 1; margin-top: 0; }
-        slider -view-model:config.properties:main-rotation-x {
+        slider -viewmodel:config.properties:main-rotation-x {
             min: -70
             max: 70
             val: 0
@@ -43,7 +42,7 @@ div #main {
         }
 
         div { inner-text: "Rotation Y axis"; height: 1; margin-top: 0; }
-        slider -view-model:config.properties:main-rotation-y {
+        slider -viewmodel:config.properties:main-rotation-y {
             min: -60
             max: 60
             val: 0
@@ -51,14 +50,14 @@ div #main {
         }
 
         div { inner-text: "Rotation Z axis"; height: 1; margin-top: 0; }
-        slider -view-model:config.properties:main-rotation-z {
+        slider -viewmodel:config.properties:main-rotation-z {
             min: -45
             max: 45
             val: 0
             width: 95%
         }
         div { inner-text: "Position X axis"; height: 1; margin-top: 0; }
-        slider -view-model:config.properties:main-position-x {
+        slider -viewmodel:config.properties:main-position-x {
             min: -45
             max: 45
             val: 0
@@ -66,7 +65,7 @@ div #main {
         }
 
         div { inner-text: "Position Y axis"; height: 1; margin-top: 0; }
-        slider -view-model:config.properties:main-position-y {
+        slider -viewmodel:config.properties:main-position-y {
             min: -45
             max: 45
             val: 0
@@ -75,7 +74,7 @@ div #main {
 
         div {}
         div { inner-text: "Position Z axis"; height: 1; margin-top: 0; }
-        slider -view-model:config.properties:main-position-z {
+        slider -viewmodel:config.properties:main-position-z {
             min: -360
             max: 360
             val: 0

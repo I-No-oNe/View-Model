@@ -1,9 +1,9 @@
-package net.i_no_am.view_model.gui;
+package net.i_no_am.viewmodel.gui;
 
+import net.i_no_am.viewmodel.client.Global;
 import io.github.itzispyder.improperui.config.ConfigKey;
 import io.github.itzispyder.improperui.config.Properties;
 import io.github.itzispyder.improperui.script.ScriptParser;
-import net.i_no_am.view_model.client.Global;
 
 public class Config implements Global {
 
@@ -18,7 +18,6 @@ public class Config implements Global {
     public static void write(String property, Object value, boolean save) {
         ScriptParser.getCache(modId).setProperty(createConfigKey(property), value, save);
     }
-
     public static double readDouble(String property) {
         var val = read(property);
         if (val == null) {

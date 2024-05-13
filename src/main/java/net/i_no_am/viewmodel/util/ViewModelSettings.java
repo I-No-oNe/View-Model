@@ -1,6 +1,6 @@
-package net.i_no_am.view_model.util;
+package net.i_no_am.viewmodel.util;
 
-import net.i_no_am.view_model.gui.Config;
+import net.i_no_am.viewmodel.gui.Config;
 
 public class ViewModelSettings {
 
