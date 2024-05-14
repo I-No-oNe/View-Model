@@ -4,7 +4,7 @@
 How to use?
 # Install the latest version and install ImproperUI Library.
 # Press the keybind V on your keyboard to open the GUI.
-# Sizes the sizes as you want with the sliders.
+# Set the sizes as you want with the sliders.
 ```
 --------------------
 ## Showcase:
