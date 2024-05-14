@@ -1,21 +1,22 @@
-# View Model Mod
+# View Model Mod By I-No-oNe
 -----------------
-### How to use?
-- **Install the latest version** and install [*ImproperUI*](https://github.com/ItziSpyder/ImproperUI/releases) by **ImproperIssues**.
-- **Press** `v` on your keyboard to open the **GUI**.
-- **Set** the sizes as you want with the sliders.
+```yml
+How to use?
+# Install the latest version and install ImproperUI Library.
+# Press the keybind V on your keyboard to open the GUI.
+# Sizes the sizes as you want with the sliders.
+```
 --------------------
-## Examples:
--------
-## GUI
+## Showcase:
+### GUI
 ![its 2 am and i want to sleep](assets/gui.png)
 ----------
-## Setting The Keybind
+### Setting The Keybind
 ![frfr](assets/keybind.png)
 --------------------
-## Example
+### In-game Example:
 ![hmmm](assets/example.png)
 -----------------
-# BE AWARE THAT YOU MUST TO HAVE THE [**IMPROPER-UI**](https://github.com/ItziSpyder/ImproperUI/releases) LIBRARY FOR THE MOD TO WORK!
+# BE AWARE THAT YOU MUST TO DOWNLOAD THE [**IMPROPER-UI**](https://github.com/ItziSpyder/ImproperUI/releases) LIBRARY IN ORDER TO THE MOD TO WORK!
 ------------------
 ## tysm for this mod 🙏

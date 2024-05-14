@@ -13,28 +13,20 @@ import org.lwjgl.glfw.GLFW;
 
 public class ViewModel implements ModInitializer, Global {
 
-    private boolean isInitialized = false;
-
     public static final KeyBinding BIND = KeyBindingHelper.registerKeyBinding(new KeyBinding(
             "binds.viewmodel.menu",
             InputUtil.Type.KEYSYM,
             GLFW.GLFW_KEY_V,
             "binds.viewmodel"
     ));
-
     @Override
     public void onInitialize() {
         ImproperUIAPI.init(modId, ViewModel.class, screens);
-        isInitialized = true;
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            ImproperUIAPI.reload(modId, ViewModel.class, screens);
-            ImproperUIAPI.reInit(modId, ViewModel.class, screens);
             while (BIND.wasPressed()) {
                 ImproperUIAPI.parseAndRunFile(modId, "screen.ui", new MenuCallbacks());
             }
-            if (isInitialized) {
                 ViewModelSettings.loadConfigValues();
-            }
         });
     }
 }

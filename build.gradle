@@ -27,7 +27,7 @@ dependencies {
     // Fabric API. This is technically optional, but you probably want it anyway.
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-    compileOnly files("libs/ImproperUI-0.0.2-BETA.jar")
+    compileOnly files("libs/ImproperUI-0.0.3-BETA.jar")
 }
 
 processResources {
