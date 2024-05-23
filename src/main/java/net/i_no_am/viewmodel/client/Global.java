@@ -4,6 +4,6 @@ public interface Global {
 
     String modId = "viewmodel";
     String[] screens = {
-            "scripts/screen.ui"
+            "assets/viewmodel/improperui/screen.ui"
     };
 }
