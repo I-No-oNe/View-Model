@@ -9,14 +9,17 @@ How to use?
 --------------------
 ## Showcase:
 ### GUI
-![its 2 am and i want to sleep](assets/gui.png)
+![GUI showcase demonstrating sliders for model positioning](assets/gui.png)
 ----------
 ### Setting The Keybind
-![frfr](assets/keybind.png)
+![Screenshot showcasing the View Model Keybind Open Menu set to V](assets/keybind.png)
 --------------------
 ### In-game Example:
-![hmmm](assets/example.png)
+![Demonstration](assets/example.png)
 -----------------
-# BE AWARE THAT YOU MUST TO DOWNLOAD THE [**IMPROPER-UI**](https://github.com/ItziSpyder/ImproperUI/releases) LIBRARY IN ORDER TO THE MOD TO WORK!
+
+**BE AWARE THAT YOU MUST TO DOWNLOAD THE [**IMPROPER-UI**](https://github.com/ItziSpyder/ImproperUI/releases) LIBRARY IN ORDER TO THE MOD TO WORK!**
+
 ------------------
-## tysm for this mod 🙏
+**tysm for using this mod** 🙏
+
