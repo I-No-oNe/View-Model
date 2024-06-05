@@ -1,9 +1,8 @@
-package net.i_no_am.viewmodel.util;
-
-import net.i_no_am.viewmodel.gui.Config;
+package net.i_no_am.viewmodel.config;
 
 public class ViewModelSettings {
 
+    public static int normal_division = 10;
     private static float main_rotation_x;
     private static float main_position_x;
     private static float main_rotation_z;
@@ -20,17 +19,17 @@ public class ViewModelSettings {
 
     public static void loadConfigValues() {
         main_rotation_x = (float) Config.readDouble("main-rotation-x");
-        main_position_x = (float) Config.readDouble("main-position-x");
+        main_position_x = (float) Config.readDouble("main-position-x") / normal_division;
         main_rotation_z = (float) Config.readDouble("main-rotation-z");
-        main_position_z = (float) Config.readDouble("main-position-z");
+        main_position_z = (float) Config.readDouble("main-position-z") / normal_division;
         main_rotation_y = (float) Config.readDouble("main-rotation-y");
-        main_position_y = (float) Config.readDouble("main-position-y");
+        main_position_y = (float) Config.readDouble("main-position-y") / normal_division;
         off_rotation_x = (float) Config.readDouble("off-rotation-x");
-        off_position_x = (float) Config.readDouble("off-position-x");
+        off_position_x = (float) Config.readDouble("off-position-x") / normal_division;
         off_rotation_z = (float) Config.readDouble("off-rotation-z");
-        off_position_z = (float) Config.readDouble("off-position-z");
+        off_position_z = (float) Config.readDouble("off-position-z") / normal_division;
         off_rotation_y = (float) Config.readDouble("off-rotation-y");
-        off_position_y = (float) Config.readDouble("off-position-y");
+        off_position_y = (float) Config.readDouble("off-position-y") / normal_division;
     }
 
     public static float getMainRotationX() {

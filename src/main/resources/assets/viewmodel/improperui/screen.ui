@@ -4,131 +4,196 @@ div #background {
     opacity: 0.1
 }
 
-div #main {
-    size: 300 237
-    background-color: black
-    opacity: 0.6
-    border-radius: 5
-    shadow-distance: 5
+div #content {
+    size: 420 200
+    background-color: none
+
+    child-align: grid
+    grid-columns: 2
 
     center: both
-
-    div #title {
-        size: 100% 10
-        inner-text: "View model"
-        text-scale: 1.2
-        text-shadow: true
-        text-color: #0ea13a
+div {}
+div #title {
+        size: 100% 25
         text-align: center
-        background-color: #00000000
-        margin-top: 7
-    }
-   div #small-title {
-        size: 100% 10
-        inner-text: "Made By I-No-oNe!"
-        text-scale: 0.7
-        text-shadow: true
+        text-scale: 2
         text-color: green
+        text-shadow: true
+        background-color: none
+        inner-text: "&aView-Model"
+        center: horizontal
+}
+    div {}
+    div #I-No-oNe {
+        size: 100% 10
         text-align: center
-        background-color: #00000000
-        margin-top: 18
+        text-scale: 0.8
+        text-color: green
+        text-shadow: true
+        background-color: none
+        inner-text: "&2Made By I-No-oNe!"
+        center: horizontal
     }
-    div #config {
-        size: 80% 120%
-        margin-top: 1%
-        child-align: grid
-        grid-columns: 2
-        opacity: 0
-        margin: 10%
-        margin-top: 14%
+    div #panel -right {
+        margin: 5
+        size: 200 140
+        background-color: #80000000
+        background-clip: margin
+        border-radius: 3
+        shadow-distance: 3
+        shadow-color: green
 
-        div { inner-text: "Main Hand Position X axis"; height: 1; margin-top: 0; }
-        slider -viewmodel:config.properties:main-position-x {
-            min: -45
-            max: 45
-            val: 0
-            width: 95%
-        }
-
-        div { inner-text: "Main Hand Position Y axis"; height: 1; margin-top: 0; }
-        slider -viewmodel:config.properties:main-position-y {
-            min: -45
-            max: 45
-            val: 0
-            width: 95%
-        }
-        div { inner-text: "Main Hand Position Z axis"; height: 1; margin-top: 0; }
-        slider -viewmodel:config.properties:main-position-z {
-            min: -30
-            max: 30
-            val: 0
-            width: 95%
-        }
-        div { inner-text: "Main Hand Rotation X axis"; height: 1; margin-top: 0; }
-        slider -viewmodel:config.properties:main-rotation-x {
-            min: -70
-            max: 70
-            val: 0
-            width: 95%
+        div #title-shadow {
+            size: 100% 20
+            background-color: none
+            shadow-distance: 3
+            shadow-color: none
+            opacity: 0.2
         }
 
-
-        div { inner-text: "Main Hand Rotation Y axis"; height: 1; margin-top: 0; }
-        slider -viewmodel:config.properties:main-rotation-y {
-            min: -60
-            max: 60
-            val: 0
-            width: 95%
-        }
-        div { inner-text: "Main Hand Rotation Z axis"; height: 1; margin-top: 0; }
-        slider -viewmodel:config.properties:main-rotation-z {
-            min: -45
-            max: 45
-            val: 0
-            width: 95%
+        h4 {
+            inner-text: "Off Hand"
+            inner-text-prefix: "&a"
+            text-shadow: true
+            text-color: orange
+            margin-top: 6
+            center: horizontal
         }
 
-        div { inner-text: "Off Hand Position X axis"; height: 1; margin-top: 0; }
+        div #settings {
+            size: 100%
+            margin-top: 27
+            margin-left: 7
+            background-color: none
+
+            child-align: grid
+            grid-columns: 2
+
+
+        div { inner-text: "Position X axis"; height: 0; margin-top: 0; }
         slider -viewmodel:config.properties:off-position-x {
             min: -45
             max: 45
             val: 0
-            width: 95%
+            width: 75%
         }
-        div { inner-text: "Off Hand Position Y axis"; height: 1; margin-top: 0; }
+        div { inner-text: "Position Y axis"; height: 0; margin-top: 0; }
         slider -viewmodel:config.properties:off-position-y {
             min: -45
             max: 45
             val: 0
-            width: 95%
+            width: 75%
         }
-        div { inner-text: "Off Hand Position Z axis"; height: 1; margin-top: 0; }
+        div { inner-text: "Position Z axis"; height: 0; margin-top: 0; }
         slider -viewmodel:config.properties:off-position-z {
             min: -30
             max: 30
             val: 0
-            width: 95%
+            width: 75%
         }
-        div { inner-text: "Off Hand Rotation X axis"; height: 1; margin-top: 0; }
+        div { inner-text: "Rotation X axis"; height: 0; margin-top: 0; }
         slider -viewmodel:config.properties:off-rotation-x {
             min: -70
             max: 70
             val: 0
-            width: 95%
+            width: 75%
         }
-        div { inner-text: "Off Hand Rotation Y axis"; height: 1; margin-top: 0; }
+        div { inner-text: "Rotation Y axis"; height: 0; margin-top: 0; }
         slider -viewmodel:config.properties:off-rotation-y {
             min: -60
             max: 60
             val: 0
-            width: 95%
+            width: 75%
         }
-        div { inner-text: "Off Hand Rotation Z axis"; height: 1; margin-top: 0; }
+        div { inner-text: "Rotation Z axis"; height: 0; margin-top: 0; }
         slider -viewmodel:config.properties:off-rotation-z {
            min: -45
             max: 45
             val: 0
-            width: 95%
+            width: 75%
+            }
+        }
+}
+
+    div #panel -left {
+        margin: 5
+        size: 200 140
+        background-color: #80000000
+        background-clip: margin
+        border-radius: 3
+        shadow-distance: 3
+        shadow-color: green
+
+        div #title-shadow {
+            size: 100%
+            background-color: none
+            shadow-distance: 3
+            shadow-color: none
+            opacity: 0.2
+        }
+
+        h4 {
+            inner-text: "Main Hand"
+            inner-text-prefix: "&a"
+            text-shadow: true
+            text-color: green
+            margin-top: 6
+            center: horizontal
+        }
+
+        div #settings {
+            size: 100%
+            margin-top: 27
+            margin-left: 7
+            background-color: none
+
+            child-align: grid
+            grid-columns: 2
+
+        div { inner-text: "Position X axis"; height: 0; margin-top: 0; }
+        slider -viewmodel:config.properties:main-position-x {
+            min: -45
+            max: 45
+            width: 75%
+            val: 0
+        }
+
+        div { inner-text: "Position Y axis"; height: 0; margin-top: 0; }
+        slider -viewmodel:config.properties:main-position-y {
+            min: -45
+            max: 45
+            val: 0
+            width: 75%
+        }
+        div { inner-text: "Position Z axis"; height: 0; margin-top: 0; }
+        slider -viewmodel:config.properties:main-position-z {
+            min: -30
+            max: 30
+            val: 0
+            width: 75%
+        }
+        div { inner-text: "Rotation X axis"; height: 0; margin-top: 0; }
+        slider -viewmodel:config.properties:main-rotation-x {
+            min: -70
+            max: 70
+            val: 0
+            width: 75%
+        }
+
+        div { inner-text: "Rotation Y axis"; height: 0; margin-top: 0; }
+        slider -viewmodel:config.properties:main-rotation-y {
+            min: -60
+            max: 60
+            val: 0
+            width: 75%
+        }
+        div { inner-text: "Rotation Z axis"; height: 0; margin-top: 0; }
+        slider -viewmodel:config.properties:main-rotation-z {
+            min: -45
+            max: 45
+            val: 0
+            width: 75%
+            }
         }
     }
 }

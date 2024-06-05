@@ -1,4 +1,4 @@
-package net.i_no_am.viewmodel.gui;
+package net.i_no_am.viewmodel.config;
 
 import net.i_no_am.viewmodel.client.Global;
 import io.github.itzispyder.improperui.config.ConfigKey;

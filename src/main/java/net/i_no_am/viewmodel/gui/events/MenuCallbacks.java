@@ -1,4 +1,4 @@
-package net.i_no_am.viewmodel.gui;
+package net.i_no_am.viewmodel.gui.events;
 
 import io.github.itzispyder.improperui.script.CallbackHandler;
 import io.github.itzispyder.improperui.script.CallbackListener;

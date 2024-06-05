@@ -1,12 +1,12 @@
 package net.i_no_am.viewmodel;
 
 import net.i_no_am.viewmodel.client.Global;
-import net.i_no_am.viewmodel.gui.MenuCallbacks;
+import net.i_no_am.viewmodel.gui.events.MenuCallbacks;
 import io.github.itzispyder.improperui.ImproperUIAPI;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.i_no_am.viewmodel.util.ViewModelSettings;
+import net.i_no_am.viewmodel.config.ViewModelSettings;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import org.lwjgl.glfw.GLFW;
