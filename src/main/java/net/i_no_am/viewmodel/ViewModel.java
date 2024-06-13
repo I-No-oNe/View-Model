@@ -1,12 +1,11 @@
 package net.i_no_am.viewmodel;
 
 import net.i_no_am.viewmodel.client.Global;
-import net.i_no_am.viewmodel.gui.events.MenuCallbacks;
 import io.github.itzispyder.improperui.ImproperUIAPI;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.i_no_am.viewmodel.config.ViewModelSettings;
+import net.i_no_am.viewmodel.gui.ViewModelSettings;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import org.lwjgl.glfw.GLFW;
@@ -24,9 +23,14 @@ public class ViewModel implements ModInitializer, Global {
         ImproperUIAPI.init(modId, ViewModel.class, screens);
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             while (BIND.wasPressed()) {
-                ImproperUIAPI.parseAndRunFile(modId, "screen.ui", new MenuCallbacks());
+                ImproperUIAPI.parseAndRunFile(modId, "screen.ui");
             }
                 ViewModelSettings.loadConfigValues();
         });
     }
+/*TODO
+1.Fix No Swing
+2.Rewrite the Hud
+3.Clean-up code
+ */
 }

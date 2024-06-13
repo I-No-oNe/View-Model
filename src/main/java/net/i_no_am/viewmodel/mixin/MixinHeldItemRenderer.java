@@ -1,7 +1,7 @@
 package net.i_no_am.viewmodel.mixin;
 
 import net.i_no_am.viewmodel.client.Global;
-import net.i_no_am.viewmodel.config.ViewModelSettings;
+import net.i_no_am.viewmodel.gui.ViewModelSettings;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.item.HeldItemRenderer;
@@ -46,3 +46,4 @@ public abstract class MixinHeldItemRenderer implements Global {
         }
     }
 }
+

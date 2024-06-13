@@ -1,4 +1,6 @@
-package net.i_no_am.viewmodel.config;
+package net.i_no_am.viewmodel.gui;
+
+import net.i_no_am.viewmodel.config.Config;
 
 public class ViewModelSettings {
 
@@ -18,6 +20,7 @@ public class ViewModelSettings {
     private static float off_position_y;
 
     public static void loadConfigValues() {
+//        view model
         main_rotation_x = (float) Config.readDouble("main-rotation-x");
         main_position_x = (float) Config.readDouble("main-position-x") / normal_division;
         main_rotation_z = (float) Config.readDouble("main-rotation-z");
