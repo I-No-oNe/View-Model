@@ -28,9 +28,4 @@ public class ViewModel implements ModInitializer, Global {
                 ViewModelSettings.loadConfigValues();
         });
     }
-/*TODO
-1.Fix No Swing
-2.Rewrite the Hud
-3.Clean-up code
- */
 }
