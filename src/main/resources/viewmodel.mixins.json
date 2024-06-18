@@ -3,7 +3,9 @@
   "minVersion": "0.8",
   "package": "net.i_no_am.viewmodel.mixin",
   "compatibilityLevel": "JAVA_21",
-  "mixins": [],
+  "mixins": [
+    "MixinLivingEntity"
+  ],
   "client": [
     "MixinClientPlayNetworkHandler",
     "MixinHeldItemRenderer"
