@@ -1,11 +1,11 @@
 div #background {
     size: 100%
     background-color: black
-    opacity: 0.1
+    opacity: 0
 }
 
 div #content {
-    size: 420 200
+    size: 420 210
     background-color: none
 
     child-align: grid
@@ -114,7 +114,7 @@ div #title {
             }
             checkbox #no-food-swing -viewmodel:config.properties:no-food-swing {}
             label {
-                inner-text: "No Eating Animation    "
+                inner-text: "No Eating Animations"
                 margin-left: 4
             }
     }
@@ -201,7 +201,7 @@ div #title {
             }
             checkbox #no-hand-swing -viewmodel:config.properties:no-hand-swing {}
             label {
-                inner-text: "No Hand Swing Animation"
+                inner-text: "No Swing Animations"
                 margin-left: 4
             }
         }

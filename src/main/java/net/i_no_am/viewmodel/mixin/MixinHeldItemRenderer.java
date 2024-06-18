@@ -64,9 +64,4 @@ public abstract class MixinHeldItemRenderer implements Global {
         }
     }
 }
-//    @Inject(method = "resetEquipProgress", at =@At("HEAD"))
-//    private void onResetEquipProgress(Hand Hand, CallbackInfo ci){
-//        if ()
-//    }
-//}
 
