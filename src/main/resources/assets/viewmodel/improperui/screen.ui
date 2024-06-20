@@ -36,7 +36,7 @@ div #title {
     }
     div #panel -right {
         margin: 5
-        size: 200 145
+        size: 200 130
         background-color: #80000000
         background-clip: margin
         border-radius: 3
@@ -107,22 +107,17 @@ div #title {
         }
         div { inner-text: "Rotation Z axis"; height: 0; margin-top: 0; }
         slider -viewmodel:config.properties:off-rotation-z {
-           min: -45
-            max: 45
+           min: -60
+            max: 60
             val: 0
             width: 75%
-            }
-            checkbox #no-food-swing -viewmodel:config.properties:no-food-swing {}
-            label {
-                inner-text: "No Eating Animations"
-                margin-left: 4
             }
     }
 }
 
     div #panel -left {
         margin: 5
-        size: 200 145
+        size: 200 130
         background-color: #80000000
         background-clip: margin
         border-radius: 3
@@ -194,16 +189,33 @@ div #title {
         }
         div { inner-text: "Rotation Z axis"; height: 0; margin-top: 0; }
         slider -viewmodel:config.properties:main-rotation-z {
-            min: -45
-            max: 45
+            min: -60
+            max: 60
             val: 0
             width: 75%
             }
-            checkbox #no-hand-swing -viewmodel:config.properties:no-hand-swing {}
-            label {
-                inner-text: "No Swing Animations"
-                margin-left: 4
-            }
         }
+     }
+      button #secondGui {
+                text-align: center
+                 inner-text: "&aAdvanced Settings"
+                 text-color: green
+                 background-color: #80000000
+                 border-radius: 3
+                 border-color: green
+                 margin: 5
+                 width: 99%
+                 padding-top: 4
+                 padding-bottom: 4
+                 center: both
+                 shadow-color: green
+                 shadow-distance: 3
+
+                 on-click: openHandsSettingScreen
+
+                 hovered => { padding: 4; border-thickness: 0; border-radius: 4; shadow-distance: 5; }
+             }
+
+       }
     }
 }

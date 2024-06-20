@@ -8,10 +8,17 @@ import net.i_no_am.viewmodel.client.Global;
 
 public class ViewModelSettings implements Global {
 
+    public static int hand_swing_speed = 6;
     public static boolean no_swing = false;
+
     public static boolean no_food_swing = false;
 
     public static int normal_division = 10;
+
+    public static float main_scale = 1.0F;
+    public static float off_scale = 1.0F;
+
+    public static boolean no_hand = false;
 
     private static float main_rotation_x;
     private static float main_position_x;
@@ -44,8 +51,14 @@ public class ViewModelSettings implements Global {
         off_position_y = (float) VmConfig.readFloat("off-position-y", 0.0F) / normal_division;
 //        No Hand Swing Animation
         no_swing = VmConfig.readBool("no-hand-swing", false);
+        hand_swing_speed = 2*VmConfig.readInt("hand-speed-swing", 3);
 //        No Eating Hand Animation
         no_food_swing = VmConfig.readBool("no-food-swing", false);
+//        Scale
+        main_scale = (float) VmConfig.readFloat("main-hand-scale", 1.0F);
+        off_scale = (float) VmConfig.readFloat("off-hand-scale", 1.0F);
+//        No hand Rendering
+        no_hand = VmConfig.readBool("no-hand-render", false);
     }
 
 

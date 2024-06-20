@@ -15,5 +15,9 @@ public class MixinLivingEntity {
             cir.setReturnValue(0);
             cir.cancel();
         }
+        if (!ViewModelSettings.no_swing) {
+            cir.setReturnValue(ViewModelSettings.hand_swing_speed);
+            cir.cancel();
+        }
     }
 }

@@ -28,7 +28,6 @@ public abstract class MixinHeldItemRenderer implements Global {
         }
     }
 
-
     @Inject(method = "renderFirstPersonItem", at = @At("HEAD"))
     public void renderFirstPersonItem(AbstractClientPlayerEntity player, float tickDelta, float pitch, Hand hand, float swingProgress, ItemStack item, float equipProgress, MatrixStack m, VertexConsumerProvider vertexConsumers, int light, CallbackInfo ci) {
         double mainRotX = ViewModelSettings.getMainRotationX();
@@ -49,20 +48,44 @@ public abstract class MixinHeldItemRenderer implements Global {
             m.multiply(RotationAxis.POSITIVE_X.rotationDegrees((float) mainRotX));
             m.multiply(RotationAxis.POSITIVE_Y.rotationDegrees((float) mainRotY));
             m.multiply(RotationAxis.POSITIVE_Z.rotationDegrees((float) mainRotZ));
-            m.translate((float) mainPosX, (float) mainPosY, (float) mainPosZ);
+            m.translate(mainPosX, mainPosY, mainPosZ);
         } else {
             m.multiply(RotationAxis.POSITIVE_X.rotationDegrees((float) offRotX));
             m.multiply(RotationAxis.POSITIVE_Y.rotationDegrees((float) offRotY));
             m.multiply(RotationAxis.POSITIVE_Z.rotationDegrees((float) offRotZ));
-            m.translate((float) offPosX, (float) offPosY, (float) offPosZ);
+            m.translate(offPosX, offPosY, offPosZ);
+        }
+    }
+
+    @Inject(method = "renderFirstPersonItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/item/HeldItemRenderer;renderItem(Lnet/minecraft/entity/LivingEntity;Lnet/minecraft/item/ItemStack;Lnet/minecraft/client/render/model/json/ModelTransformationMode;ZLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V"))
+    private void onRenderFirstPersonItem(AbstractClientPlayerEntity player, float tickDelta, float pitch, Hand hand, float swingProgress, ItemStack item, float equipProgress, MatrixStack ms, VertexConsumerProvider vertexConsumers, int light, CallbackInfo ci) {
+        float mainScale = ViewModelSettings.main_scale;
+        float offScale = ViewModelSettings.off_scale;
+        if (hand == Hand.MAIN_HAND) {
+            ms.scale(mainScale, mainScale, mainScale);
+        } else {
+            ms.scale(offScale, offScale, offScale);
+        }
+    }
+
+    @Inject(method = "renderFirstPersonItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/item/HeldItemRenderer;renderArmHoldingItem(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;IFFLnet/minecraft/util/Arm;)V"))
+    private void OnRenderFirstPersonItem(AbstractClientPlayerEntity player, float tickDelta, float pitch, Hand hand, float swingProgress, ItemStack item, float equipProgress, MatrixStack ms, VertexConsumerProvider vertexConsumers, int light, CallbackInfo ci) {
+        float mainScale = ViewModelSettings.main_scale;
+        float offScale = ViewModelSettings.off_scale;
+        if (hand == Hand.MAIN_HAND) {
+            ms.scale(mainScale, mainScale, mainScale);
+        } else {
+            ms.scale(offScale, offScale, offScale);
+        }
+        if (ViewModelSettings.no_hand) {
+            ms.scale(0, 0, 0);
         }
     }
 
     @ModifyArgs(method = "renderItem(FLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider$Immediate;Lnet/minecraft/client/network/ClientPlayerEntity;I)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/item/HeldItemRenderer;renderFirstPersonItem(Lnet/minecraft/client/network/AbstractClientPlayerEntity;FFLnet/minecraft/util/Hand;FLnet/minecraft/item/ItemStack;FLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V"))
-    public void renderItem(Args args) {
+    private void renderItem(Args args) {
         if (ViewModelSettings.no_swing) {
             args.set(6, 0.0F);
         }
     }
 }
-
