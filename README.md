@@ -5,11 +5,14 @@ How to use?
 # Install the latest version and install ImproperUI Library.
 # Press the keybind V on your keyboard to open the GUI.
 # Set the sizes as you want with the sliders.
+# Turn on/off the settings as you want.
 ```
 --------------------
 ## Showcase:
 ### GUI
 ![GUI showcase demonstrating sliders for model positioning](assets/gui.png)
+### Advanced Settings GUI:
+![Second GUI with more settings](assets/second_gui.png)
 ----------
 ### Setting The Keybind
 ![Screenshot showcasing the View Model Keybind Open Menu set to V](assets/keybind.png)
