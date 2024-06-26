@@ -6,9 +6,8 @@ div #background {
 }
 
 div #main {
-    size: 150 160
-    background-color: black
-    opacity: 0.5
+    size: 150 185
+    background-color: #80000000
         border-radius: 3
         shadow-distance: 3
         shadow-color: green
@@ -16,12 +15,12 @@ div #main {
 
     div #title {
         size: 100% 10
-        inner-text: "Hands Settings"
+        inner-text: "&aAdvanced Settings"
         text-scale: 1.2
         text-shadow: true
         text-color: green
         text-align: center
-        background-color: #00000000
+        background-color: none
         margin-top: 7
     }
 
@@ -33,15 +32,7 @@ div #main {
         grid-columns: 2
         opacity: 0
         margin: 10%
-        margin-top: 20%
-
-
-            checkbox #no-hand-swing -viewmodel:config.properties:no-hand-swing {}
-            label {
-                inner-text: "No Swing Animations"
-                margin-left: 4
-            }
-
+        margin-top: 15%
 
             checkbox #no-food-swing -viewmodel:config.properties:no-food-swing {margin-top: 6}
             label {
@@ -59,10 +50,10 @@ div #main {
 
         div {}
         div {
-            margin-top: 20
+            margin-top: 16
         }
 
-        div { inner-text: "Main Item Scale"; }
+        div { inner-text: "Main Item Scale";}
         slider -viewmodel:config.properties:main-hand-scale {
             min: 0.1
             max: 3.0
@@ -82,6 +73,32 @@ div #main {
             max: 7.0
             val: 3.0
             width: 75%
+        }
+        div #v1{
+            inner-text: "Mode 1"
+            margin-top: 16
+            margin-left: 43
+        }
+        div{
+        inner-text: "&2No Swing:"
+        text-align: center
+        background-color: none
+        margin-top: 2
+        margin-left: 11
+        }
+        div #enums{
+            margin-top: 10
+            margin-right: 1
+            child-align: grid
+            grid-columns: 1
+            height: 15
+            radio -viewmodel:config.properties:no-hand-swing {margin-left: 27;}
+            radio -viewmodel:config.properties:no-hand-swing-v2 {margin-left: 27; margin-top: 5;}
+        }
+        div #text{
+            inner-text: "Mode 2"
+            margin-top: 32
+            margin-left: 43
         }
     }
 }

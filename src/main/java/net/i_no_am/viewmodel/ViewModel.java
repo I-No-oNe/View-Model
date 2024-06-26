@@ -5,7 +5,7 @@ import io.github.itzispyder.improperui.ImproperUIAPI;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.i_no_am.viewmodel.gui.ViewModelSettings;
+import net.i_no_am.viewmodel.config.ConfigManager;
 import net.i_no_am.viewmodel.event.SecondMenuCallBack;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
@@ -26,7 +26,7 @@ public class ViewModel implements ModInitializer, Global {
             while (BIND.wasPressed()) {
                 ImproperUIAPI.parseAndRunFile(modId, "screen.ui",new SecondMenuCallBack());
             }
-                ViewModelSettings.loadConfigValues();
+                ConfigManager.loadConfigValues();
         });
     }
 }
