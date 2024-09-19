@@ -77,7 +77,7 @@ public abstract class MixinHeldItemRenderer implements Global {
     }
 
     @Inject(method = "applyEatOrDrinkTransformation", at = @At("HEAD"), cancellable = true)
-    public void noEatingAnimations(MatrixStack matrices, float tickDelta, Arm arm, ItemStack stack, PlayerEntity player, CallbackInfo ci) {
+    public void noEatingAnimations(MatrixStack matrices, float tickDelta, Arm arm, ItemStack stack, CallbackInfo ci) {
         if (Config.noFoodSwing.getVal()) {
             ci.cancel();
         }
