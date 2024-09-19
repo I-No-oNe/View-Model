@@ -7,8 +7,9 @@
     "MixinLivingEntity"
   ],
   "client": [
-    "MixinClientPlayNetworkHandler",
-    "MixinHeldItemRenderer"
+    "MixinCamera",
+    "MixinHeldItemRenderer",
+    "MixinTitleScreen"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -69,8 +69,8 @@ div #main {
         }
         div { inner-text: "Hand Swing Speed"; }
         slider -viewmodel:config.properties:hand-speed-swing {
-            min: 1.0
-            max: 7.0
+            min: 0.0
+            max: 20.0
             val: 3.0
             width: 75%
         }
@@ -92,8 +92,8 @@ div #main {
             child-align: grid
             grid-columns: 1
             height: 15
-            radio -viewmodel:config.properties:no-hand-swing {margin-left: 27;}
-            radio -viewmodel:config.properties:no-hand-swing-v2 {margin-left: 27; margin-top: 5;}
+            checkbox -viewmodel:config.properties:no-hand-swing-v1 {margin-left: 27;}
+            checkbox -viewmodel:config.properties:no-hand-swing-v2 {margin-left: 27; margin-top: 5;}
         }
         div #text{
             inner-text: "Mode 2"

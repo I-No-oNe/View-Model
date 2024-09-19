@@ -15,9 +15,7 @@
   "icon": "assets/viewmodel/icon.png",
   "environment": "*",
   "entrypoints": {
-    "client": [
-      "net.i_no_am.viewmodel.client.ViewModelClient"
-    ],
+    "client": [],
     "main": [
       "net.i_no_am.viewmodel.ViewModel"
     ]

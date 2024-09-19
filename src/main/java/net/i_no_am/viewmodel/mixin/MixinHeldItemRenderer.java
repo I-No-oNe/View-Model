@@ -1,8 +1,7 @@
 package net.i_no_am.viewmodel.mixin;
 
-import net.i_no_am.viewmodel.client.Global;
-import net.i_no_am.viewmodel.config.ConfigManager;
-import net.i_no_am.viewmodel.config.settings.ViewModelSettings;
+import net.i_no_am.viewmodel.Global;
+import net.i_no_am.viewmodel.config.Config;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.item.HeldItemRenderer;
@@ -26,24 +25,25 @@ public abstract class MixinHeldItemRenderer implements Global {
     public void viewmodel(AbstractClientPlayerEntity player, float tickDelta, float pitch, Hand hand, float swingProgress, ItemStack item, float equipProgress, MatrixStack m, VertexConsumerProvider vertexConsumers, int light, CallbackInfo ci) {
         m.push();
         if (hand == Hand.MAIN_HAND) {
-            float mainRotX = (Float) ConfigManager.get(ViewModelSettings.MAIN_ROT_X).getVal();
-            float mainPosX = (Float) ConfigManager.get(ViewModelSettings.MAIN_POS_X).getVal();
-            float mainRotZ = (Float) ConfigManager.get(ViewModelSettings.MAIN_ROT_Z).getVal();
-            float mainPosZ = (Float) ConfigManager.get(ViewModelSettings.MAIN_POS_Z).getVal();
-            float mainRotY = (Float) ConfigManager.get(ViewModelSettings.MAIN_ROT_Y).getVal();
-            float mainPosY = (Float) ConfigManager.get(ViewModelSettings.MAIN_POS_Y).getVal();
+            float mainRotX = Config.mainRotationX.getVal().floatValue();
+            float mainPosX = Config.mainPositionX.getVal().floatValue();
+            float mainRotZ = Config.mainRotationZ.getVal().floatValue();
+            float mainPosZ = Config.mainPositionZ.getVal().floatValue();
+            float mainRotY = Config.mainRotationY.getVal().floatValue();
+            float mainPosY = Config.mainPositionY.getVal().floatValue();
 
             m.multiply(RotationAxis.POSITIVE_X.rotationDegrees(mainRotX));
             m.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(mainRotY));
             m.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(mainRotZ));
             m.translate(mainPosX, mainPosY, mainPosZ);
-        } else {
-            float offRotX = (Float) ConfigManager.get(ViewModelSettings.OFF_ROT_X).getVal();
-            float offPosX = (Float) ConfigManager.get(ViewModelSettings.OFF_POS_X).getVal();
-            float offRotZ = (Float) ConfigManager.get(ViewModelSettings.OFF_ROT_Z).getVal();
-            float offPosZ = (Float) ConfigManager.get(ViewModelSettings.OFF_POS_Z).getVal();
-            float offRotY = (Float) ConfigManager.get(ViewModelSettings.OFF_ROT_Y).getVal();
-            float offPosY = (Float) ConfigManager.get(ViewModelSettings.OFF_POS_Y).getVal();
+        }
+        else {
+            float offRotX = Config.offRotationX.getVal().floatValue();
+            float offPosX = Config.offPositionX.getVal().floatValue();
+            float offRotZ = Config.offRotationZ.getVal().floatValue();
+            float offPosZ = Config.offPositionZ.getVal().floatValue();
+            float offRotY = Config.offRotationY.getVal().floatValue();
+            float offPosY = Config.offPositionY.getVal().floatValue();
 
             m.multiply(RotationAxis.POSITIVE_X.rotationDegrees(offRotX));
             m.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(offRotY));
@@ -60,8 +60,8 @@ public abstract class MixinHeldItemRenderer implements Global {
 
     @Inject(method = "renderFirstPersonItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/item/HeldItemRenderer;renderItem(Lnet/minecraft/entity/LivingEntity;Lnet/minecraft/item/ItemStack;Lnet/minecraft/client/render/model/json/ModelTransformationMode;ZLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V"))
     private void scaleForItems(AbstractClientPlayerEntity player, float tickDelta, float pitch, Hand hand, float swingProgress, ItemStack item, float equipProgress, MatrixStack ms, VertexConsumerProvider vertexConsumers, int light, CallbackInfo ci) {
-        float mainScale = (Float) ConfigManager.get(ViewModelSettings.MAIN_SCALE).getVal();
-        float offScale = (Float) ConfigManager.get(ViewModelSettings.OFF_SCALE).getVal();
+        float mainScale = Config.mainHandScale.getVal().floatValue();
+        float offScale = Config.offHandScale.getVal().floatValue();
         if (hand == Hand.MAIN_HAND) {
             ms.scale(mainScale, mainScale, mainScale);
         } else {
@@ -70,30 +70,22 @@ public abstract class MixinHeldItemRenderer implements Global {
     }
 
     @Inject(method = "renderFirstPersonItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/item/HeldItemRenderer;renderArmHoldingItem(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;IFFLnet/minecraft/util/Arm;)V"))
-    private void scaleForHands(AbstractClientPlayerEntity player, float tickDelta, float pitch, Hand hand, float swingProgress, ItemStack item, float equipProgress, MatrixStack ms, VertexConsumerProvider vertexConsumers, int light, CallbackInfo ci) {
-        float mainScale = (Float) ConfigManager.get(ViewModelSettings.MAIN_SCALE).getVal();
-        float offScale = (Float) ConfigManager.get(ViewModelSettings.OFF_SCALE).getVal();
-        if (hand == Hand.MAIN_HAND) {
-            ms.scale(mainScale, mainScale, mainScale);
-        } else {
-            ms.scale(offScale, offScale, offScale);
-        }
-        if ((boolean) ConfigManager.get(ViewModelSettings.NO_HAND).getVal()) {
+    private void noHandsRender(AbstractClientPlayerEntity player, float tickDelta, float pitch, Hand hand, float swingProgress, ItemStack item, float equipProgress, MatrixStack ms, VertexConsumerProvider vertexConsumers, int light, CallbackInfo ci) {
+        if (Config.noHandRender.getVal()) {
             ms.scale(0, 0, 0);
         }
     }
 
-
     @Inject(method = "applyEatOrDrinkTransformation", at = @At("HEAD"), cancellable = true)
-    public void OnApplyEatOrDrinkTransformation(MatrixStack matrices, float tickDelta, Arm arm, ItemStack stack, PlayerEntity player, CallbackInfo ci) {
-        if ((Boolean) ConfigManager.get(ViewModelSettings.NO_FOOD_SWING).getVal()) {
+    public void noEatingAnimations(MatrixStack matrices, float tickDelta, Arm arm, ItemStack stack, PlayerEntity player, CallbackInfo ci) {
+        if (Config.noFoodSwing.getVal()) {
             ci.cancel();
         }
     }
 
     @ModifyArgs(method = "renderItem(FLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider$Immediate;Lnet/minecraft/client/network/ClientPlayerEntity;I)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/item/HeldItemRenderer;renderFirstPersonItem(Lnet/minecraft/client/network/AbstractClientPlayerEntity;FFLnet/minecraft/util/Hand;FLnet/minecraft/item/ItemStack;FLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V"))
     private void renderItem(Args args) {
-        if ((Boolean) ConfigManager.get(ViewModelSettings.NO_SWING).getVal() && !(boolean) ConfigManager.get(ViewModelSettings.NO_SWING_V2).getVal()) {
+        if (Config.noHandSwingV1.getVal() && !Config.noHandSwingV2.getVal()) {
             args.set(6, 0.0F);
         }
     }
