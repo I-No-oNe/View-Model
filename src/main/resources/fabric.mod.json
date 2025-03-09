@@ -24,7 +24,6 @@
     "viewmodel.mixins.json"
   ],
   "depends": {
-    "improperui": ">=${improperui_version}",
     "fabricloader": ">=${loader_version}",
     "fabric": "*",
     "minecraft": ">=${minecraft_version}"

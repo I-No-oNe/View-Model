@@ -1,4 +1,5 @@
 {
-  "binds.viewmodel": "View Model",
-  "binds.viewmodel.menu": "Open Menu"
+  "viewmodel.midnightconfig.category.Advanced Settings": "Advanced",
+  "viewmodel.midnightconfig.category.Settings": "Settings",
+  "viewmodel.midnightconfig.firstMsg": "Made by §o§aI-No-oNe!§r"
 }

@@ -1,8 +1,8 @@
 package net.i_no_am.viewmodel.mixin;
 
 import net.fabricmc.loader.api.FabricLoader;
-import net.i_no_am.viewmodel.ViewModel;
 import net.i_no_am.viewmodel.Global;
+import net.i_no_am.viewmodel.ViewModel;
 import net.minecraft.client.gui.screen.ConfirmScreen;
 import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.text.Text;

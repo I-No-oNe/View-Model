@@ -7,7 +7,6 @@
     "MixinLivingEntity"
   ],
   "client": [
-    "MixinCamera",
     "MixinHeldItemRenderer",
     "MixinTitleScreen"
   ],

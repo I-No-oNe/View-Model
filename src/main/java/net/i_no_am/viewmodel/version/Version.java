@@ -6,40 +6,40 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.i_no_am.viewmodel.Global;
 import net.i_no_am.viewmodel.ViewModel;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 
 public class Version implements Global {
 
-    private static final String REPO = "https://api.github.com/repos/I-No-oNe/View-Model/releases/latest";
+        private static final String SOURCE = "https://raw.githubusercontent.com/I-No-oNe/View-Model/refs/heads/1.21.4-midnight-lib/version";
 
     public static void checkUpdates() {
         try {
             String latestVersion = getLatestVersionFromGitHub();
             if (!latestVersion.equals(getModVersion())) {
                 ViewModel.isOutdated = true;
+                System.out.println("Oh no, you are using an outdated version of ViewModel! The latest version is " + latestVersion);
             }
         } catch (Exception ignored) {}
     }
 
     private static String getLatestVersionFromGitHub() throws Exception {
-        HttpURLConnection connection = (HttpURLConnection) new URL(Version.REPO).openConnection();
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(SOURCE))
+                .header("Accept", "application/vnd.github.v3+json")
+                .build();
 
-        connection.setRequestMethod("GET");
-        connection.setRequestProperty("Accept", "application/vnd.github.v3+json");
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-        BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-        StringBuilder response = new StringBuilder();
-        String inputLine;
-        while ((inputLine = in.readLine()) != null) {
-            response.append(inputLine);
+        if (response.statusCode() != 200) {
+            throw new RuntimeException("Failed to fetch latest version: " + response.statusCode());
         }
-        in.close();
 
-        JsonObject jsonResponse = JsonParser.parseString(response.toString()).getAsJsonObject();
-        return jsonResponse.get("tag_name").getAsString();
+        JsonObject jsonResponse = JsonParser.parseString(response.body()).getAsJsonObject();
+        return jsonResponse.get("version").getAsString();
     }
 
 

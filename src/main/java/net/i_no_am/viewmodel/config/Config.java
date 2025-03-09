@@ -1,65 +1,84 @@
 package net.i_no_am.viewmodel.config;
 
-import io.github.itzispyder.improperui.ImproperUIAPI;
-import io.github.itzispyder.improperui.config.ConfigReader;
-import io.github.itzispyder.improperui.util.ChatUtils;
+import eu.midnightdust.lib.config.MidnightConfig;
 import net.i_no_am.viewmodel.Global;
-import net.i_no_am.viewmodel.config.settings.ConfigSettings;
+import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
-public class Config implements Global {
+public class Config extends MidnightConfig implements Global {
+    public final static String FIRST_PAGE = "Settings";
+    public final static String SECOND_PAGE = "Advanced Settings";
 
-    private static final ConfigReader VMConfig = ImproperUIAPI.getConfigReader(modId, "config.properties");
+    @Client
+    @Comment(category = FIRST_PAGE, centered = true)
+    public static String firstMsg;
+    @Entry(isSlider = true, category = FIRST_PAGE, min = -45, max = 45, name = "Main hand position on X axis")
+    public static float mainPositionX = 0.0F;
 
-    /*First Page Settings:*/
-    public static ConfigSettings<Double> mainPositionX;
-    public static ConfigSettings<Double> mainRotationX;
-    public static ConfigSettings<Double> offPositionX;
-    public static ConfigSettings<Double> offRotationX;
-    public static ConfigSettings<Double> mainPositionY;
-    public static ConfigSettings<Double> mainRotationY;
-    public static ConfigSettings<Double> offPositionY;
-    public static ConfigSettings<Double> offRotationY;
-    public static ConfigSettings<Double> mainPositionZ;
-    public static ConfigSettings<Double> mainRotationZ;
-    public static ConfigSettings<Double> offPositionZ;
-    public static ConfigSettings<Double> offRotationZ;
-    /*Second Page Settings*/
-    public static ConfigSettings<Double> handSpeedSwing;
-    public static ConfigSettings<Double> mainHandScale;
-    public static ConfigSettings<Double> offHandScale;
-    public static ConfigSettings<Boolean> noHandSwingV2;
-    public static ConfigSettings<Boolean> noHandSwingV1;
-    public static ConfigSettings<Boolean> noFoodSwing;
-    public static ConfigSettings<Boolean> noHandRender;
+    @Entry(isSlider = true, category = FIRST_PAGE, min = -70, max = 70, name = "Main hand rotation on X axis")
+    public static float mainRotationX = 0.0F;
 
-    public static void loadConfig() {
-        /*First Page Settings:*/
-        mainPositionX = new ConfigSettings<>(Double.class, VMConfig.readDouble("main-position-x", 0.0));
-        mainRotationX = new ConfigSettings<>(Double.class, VMConfig.readDouble("main-rotation-x", 0.0));
-        offPositionX = new ConfigSettings<>(Double.class, VMConfig.readDouble("off-position-x", 0.0));
-        offRotationX = new ConfigSettings<>(Double.class, VMConfig.readDouble("off-rotation-x", 0.0));
-        mainPositionY = new ConfigSettings<>(Double.class, VMConfig.readDouble("main-position-y", 0.0));
-        mainRotationY = new ConfigSettings<>(Double.class, VMConfig.readDouble("main-rotation-y", 0.0));
-        offPositionY = new ConfigSettings<>(Double.class, VMConfig.readDouble("off-position-y", 0.0));
-        offRotationY = new ConfigSettings<>(Double.class, VMConfig.readDouble("off-rotation-y", 0.0));
-        mainPositionZ = new ConfigSettings<>(Double.class, VMConfig.readDouble("main-position-z", 0.0));
-        mainRotationZ = new ConfigSettings<>(Double.class, VMConfig.readDouble("main-rotation-z", 0.0));
-        offPositionZ = new ConfigSettings<>(Double.class, VMConfig.readDouble("off-position-z", 0.0));
-        offRotationZ = new ConfigSettings<>(Double.class, VMConfig.readDouble("off-rotation-z", 0.0));
-        /*Second Page Settings:*/
-        handSpeedSwing = new ConfigSettings<>(Double.class, VMConfig.readDouble("hand-speed-swing", 4.0));///it was 1 - 7, from now its 0 - 5 (2 and below didnt work)
-        mainHandScale = new ConfigSettings<>(Double.class, VMConfig.readDouble("main-hand-scale", 1.0));
-        offHandScale = new ConfigSettings<>(Double.class, VMConfig.readDouble("off-hand-scale", 1.0));
-        noHandSwingV2 = new ConfigSettings<>(Boolean.class, VMConfig.readBool("no-hand-swing-v2", false));
-        noHandSwingV1 = new ConfigSettings<>(Boolean.class, VMConfig.readBool("no-hand-swing-v1", false));
-        noFoodSwing = new ConfigSettings<>(Boolean.class, VMConfig.readBool("no-food-swing", false));
-        noHandRender = new ConfigSettings<>(Boolean.class, VMConfig.readBool("no-hand-render", false));
-        /*No Swing Logic*/
-        if (noHandSwingV2.getVal() && (noHandSwingV1.getVal())) {
-            VMConfig.write("no-hand-swing", false);
-            VMConfig.write("no-hand-swing-v2", false);
-            ChatUtils.sendMessage(PREFIX + Formatting.RED + "CHOOSE ONE OPTION!");
+    @Entry(isSlider = true, category = FIRST_PAGE, min = -45, max = 45, name = "Off hand position on X axis")
+    public static float offPositionX = 0.0F;
+
+    @Entry(isSlider = true, category = FIRST_PAGE, min = -70, max = 70, name = "Off hand rotation on X axis")
+    public static float offRotationX = 0.0F;
+
+    @Entry(isSlider = true, category = FIRST_PAGE, min = -45, max = 45, name = "Main hand position on Y axis")
+    public static float mainPositionY = 0.0F;
+
+    @Entry(isSlider = true, category = FIRST_PAGE, min = -60, max = 60, name = "Main hand rotation on Y axis")
+    public static float mainRotationY = 0.0F;
+
+    @Entry(isSlider = true, category = FIRST_PAGE, min = -45, max = 45, name = "Off hand position on Y axis")
+    public static float offPositionY = 0.0F;
+
+    @Entry(isSlider = true, category = FIRST_PAGE, min = -60, max = 60, name = "Off hand rotation on Y axis")
+    public static float offRotationY = 0.0F;
+
+    @Entry(isSlider = true, category = FIRST_PAGE, min = -30, max = 30, name = "Main hand position on Z axis")
+    public static float mainPositionZ = 0.0F;
+
+    @Entry(isSlider = true, category = FIRST_PAGE, min = -60, max = 60, name = "Main hand rotation on Z axis")
+    public static float mainRotationZ = 0.0F;
+
+    @Entry(isSlider = true, category = FIRST_PAGE, min = -30, max = 30, name = "Off hand position on Z axis")
+    public static float offPositionZ = 0.0F;
+
+    @Entry(isSlider = true, category = FIRST_PAGE, min = -60, max = 60, name = "Off hand rotation on Z axis")
+    public static float offRotationZ = 0.0F;
+
+    // Second Page Settings
+    @Entry(isSlider = true, category = SECOND_PAGE, min = 0, max = 5, name = "Speed of the hand swing animation")
+    public static int handSpeedSwing = 4;
+
+    @Entry(isSlider = true, category = SECOND_PAGE, min = 0.1F, max = 5.0F, name = "Scale of the main hand")
+    public static float mainHandScale = 1.0F;
+
+    @Entry(isSlider = true, category = SECOND_PAGE, min = 0.1F, max = 5.0F, name = "Scale of the off hand")
+    public static float offHandScale = 1.0F;
+
+    @Entry(category = SECOND_PAGE, name = "Disables hand swinging animations (V2)")
+    public static boolean noHandSwingV2 = false;
+
+    @Entry(category = SECOND_PAGE, name = "Disables hand swinging animations (V1)")
+    public static boolean noHandSwingV1 = false;
+
+    @Entry(category = SECOND_PAGE, name = "Disables eating and drinking animations")
+    public static boolean noFoodSwing = false;
+
+    @Entry(category = SECOND_PAGE, name = "Hides the hand model")
+    public static boolean noHandRender = false;
+
+    public static void register() {
+        MidnightConfig.init(modId, Config.class);
+    }
+
+    public static void configFix() {
+        if (noHandSwingV2 && noHandSwingV1) {
+            noHandSwingV2 = false;
+            noHandSwingV1 = false;
+            mc.player.sendMessage(Text.of(PREFIX + Formatting.RED + "CHOOSE ONE OPTION!"), false);
         }
     }
 }
