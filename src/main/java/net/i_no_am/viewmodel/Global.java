@@ -6,4 +6,7 @@ public interface Global {
     MinecraftClient mc = MinecraftClient.getInstance();
     String PREFIX = "§7[§aViewModel§7]§r ";
     String modId = "viewmodel";
+    default void log(String message){
+        System.out.println(message);
+    }
 }

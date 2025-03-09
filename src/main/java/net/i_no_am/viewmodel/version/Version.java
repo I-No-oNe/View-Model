@@ -20,9 +20,13 @@ public class Version implements Global {
             String latestVersion = getLatestVersionFromGitHub();
             if (!latestVersion.equals(getModVersion())) {
                 ViewModel.isOutdated = true;
-                System.out.println("Oh no, you are using an outdated version of ViewModel! The latest version is " + latestVersion);
+                System.out.println("Oh no, you are using an outdated version of ViewModel! The latest version is " + latestVersion + "...");
+            } else {
+                System.out.println("You are using the latest version of ViewModel which is " + latestVersion + "!");
             }
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+            System.out.println("View Model failed to check for updates...");
+        }
     }
 
     private static String getLatestVersionFromGitHub() throws Exception {

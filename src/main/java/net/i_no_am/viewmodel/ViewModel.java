@@ -16,14 +16,26 @@ public class ViewModel implements ModInitializer, Global {
 
     @Override
     public void onInitialize() {
+        log("ViewModel is initializing...");
+        log("View Model is checking for updates...");
         Version.checkUpdates();
+        log("View Model Config is registering...");
         Config.register();
+        log("View Model Config has been registered!");
+        log("ViewModel has been initialized!");
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            Config.configFix();
+            if (mc.player != null) Config.configFix();
             if (BIND.wasPressed()) {
                 mc.setScreen(Config.getScreen(mc.currentScreen, modId));
             }
         });
     }
 }
+/* TODO
+ * 1. Update README.md
+ * 2. Improve check for updates on startup (Better handling and messages instead of a screen mixin)
+ * 3. Better debuging
+ * 4. Add more comments to GUI
+ * 5. Update features
+ */
