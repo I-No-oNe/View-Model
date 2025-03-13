@@ -12,6 +12,10 @@ public class Config extends MidnightConfig implements Global {
     @Client
     @Comment(category = FIRST_PAGE, centered = true)
     public static String firstMsg;
+
+    @Comment(category = FIRST_PAGE, centered = true)
+    public static String secondMsg = "hand position and rotation settings";
+
     @Entry(isSlider = true, category = FIRST_PAGE, min = -45, max = 45, name = "Main hand position on X axis")
     public static float mainPositionX = 0.0F;
 
@@ -49,6 +53,9 @@ public class Config extends MidnightConfig implements Global {
     public static float offRotationZ = 0.0F;
 
     // Second Page Settings
+    @Comment(category = SECOND_PAGE, centered = true)
+    public static String thirdMsg = "hand scale and animation settings";
+
     @Entry(isSlider = true, category = SECOND_PAGE, min = 0, max = 5, name = "Speed of the hand swing animation")
     public static int handSpeedSwing = 4;
 
@@ -58,11 +65,16 @@ public class Config extends MidnightConfig implements Global {
     @Entry(isSlider = true, category = SECOND_PAGE, min = 0.1F, max = 5.0F, name = "Scale of the off hand")
     public static float offHandScale = 1.0F;
 
+    @Comment(category = SECOND_PAGE, centered = true)
+    public static String fourthMsg = "hand animation settings";
+    @Entry(category = SECOND_PAGE, name = "Disables hand swinging animations (V1)")
+    public static boolean noHandSwingV1 = false;
+
     @Entry(category = SECOND_PAGE, name = "Disables hand swinging animations (V2)")
     public static boolean noHandSwingV2 = false;
 
-    @Entry(category = SECOND_PAGE, name = "Disables hand swinging animations (V1)")
-    public static boolean noHandSwingV1 = false;
+    @Entry(category = SECOND_PAGE, name = "Disables hand swinging animations (V3)")
+    public static boolean noHandSwingV3 = false;
 
     @Entry(category = SECOND_PAGE, name = "Disables eating and drinking animations")
     public static boolean noFoodSwing = false;

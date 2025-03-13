@@ -10,26 +10,36 @@ import net.minecraft.client.util.InputUtil;
 import org.lwjgl.glfw.GLFW;
 
 public class ViewModel implements ModInitializer, Global {
-
-    public static boolean isOutdated = false;
     public static final KeyBinding BIND = KeyBindingHelper.registerKeyBinding(new KeyBinding("View Model GUI", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_V, KeyBinding.UI_CATEGORY));
 
     @Override
     public void onInitialize() {
-        log("ViewModel is initializing...");
-        log("View Model is checking for updates...");
-        Version.checkUpdates();
-        log("View Model Config is registering...");
+        Log("ViewModel is initializing...");
+        Log("View Model is checking for updates...");
+        Log("View Model Config is registering...");
         Config.register();
-        log("View Model Config has been registered!");
-        log("ViewModel has been initialized!");
+        Log("View Model Config has been registered!");
+        Log("ViewModel has been initialized!");
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            if (mc.player != null) Config.configFix();
+            Log("Starting ViewModel Client Tick...");
+            if (mc.player != null) {
+                Config.configFix();
+                try {
+                    Version.sendUpdate();
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
             if (BIND.wasPressed()) {
+                Log("Opening View Model GUI...");
                 mc.setScreen(Config.getScreen(mc.currentScreen, modId));
             }
         });
+    }
+    public static void Log(String message) {
+        if (isDev) return;
+        System.out.println(message);
     }
 }
 /* TODO

@@ -51,6 +51,13 @@ public abstract class MixinHeldItemRenderer implements Global {
         }
     }
 
+    @Inject(method = "swingArm", at = @At("HEAD"), cancellable = true)
+    private void doSwing(float swingProgress, float equipProgress, MatrixStack matrices, int armX, Arm arm, CallbackInfo ci) {
+        if (Config.noHandSwingV3) {
+            ci.cancel();
+        }
+    }
+
     @Inject(method = "renderFirstPersonItem", at = @At("TAIL"))
     public void popMatrixAfterRenderFirstPersonItem(AbstractClientPlayerEntity player, float tickDelta, float pitch, Hand hand, float swingProgress, ItemStack item, float equipProgress, MatrixStack m, VertexConsumerProvider vertexConsumers, int light, CallbackInfo ci) {
         m.pop();
