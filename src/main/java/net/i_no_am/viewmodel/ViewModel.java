@@ -10,7 +10,10 @@ import net.minecraft.client.util.InputUtil;
 import org.lwjgl.glfw.GLFW;
 
 public class ViewModel implements ModInitializer, Global {
+
     public static final KeyBinding BIND = KeyBindingHelper.registerKeyBinding(new KeyBinding("View Model GUI", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_V, KeyBinding.UI_CATEGORY));
+    public static final String API = "https://api.github.com/repos/I-No-oNe/View-Model/releases/latest";
+    public static final String DOWNLOAD = "https://modrinth.com/mod/no-ones-view-model/versions";
 
     @Override
     public void onInitialize() {
@@ -22,21 +25,15 @@ public class ViewModel implements ModInitializer, Global {
         Log("ViewModel has been initialized!");
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            Log("Starting ViewModel Client Tick...");
-            if (mc.player != null) {
-                Config.configFix();
-                try {
-                    Version.sendUpdate();
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-            }
+            new Version(API, DOWNLOAD).notifyV();
+            Config.configFix();
             if (BIND.wasPressed()) {
                 Log("Opening View Model GUI...");
                 mc.setScreen(Config.getScreen(mc.currentScreen, modId));
             }
         });
     }
+
     public static void Log(String message) {
         if (isDev) return;
         System.out.println(message);

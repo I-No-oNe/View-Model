@@ -6,6 +6,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
 public class Config extends MidnightConfig implements Global {
+
     public final static String FIRST_PAGE = "Settings";
     public final static String SECOND_PAGE = "Advanced Settings";
 
@@ -14,7 +15,7 @@ public class Config extends MidnightConfig implements Global {
     public static String firstMsg;
 
     @Comment(category = FIRST_PAGE, centered = true)
-    public static String secondMsg = "hand position and rotation settings";
+    public static String secondMsg;
 
     @Entry(isSlider = true, category = FIRST_PAGE, min = -45, max = 45, name = "Main hand position on X axis")
     public static float mainPositionX = 0.0F;
@@ -54,7 +55,7 @@ public class Config extends MidnightConfig implements Global {
 
     // Second Page Settings
     @Comment(category = SECOND_PAGE, centered = true)
-    public static String thirdMsg = "hand scale and animation settings";
+    public static String thirdMsg;
 
     @Entry(isSlider = true, category = SECOND_PAGE, min = 0, max = 5, name = "Speed of the hand swing animation")
     public static int handSpeedSwing = 4;
@@ -66,15 +67,12 @@ public class Config extends MidnightConfig implements Global {
     public static float offHandScale = 1.0F;
 
     @Comment(category = SECOND_PAGE, centered = true)
-    public static String fourthMsg = "hand animation settings";
+    public static String fourthMsg;
     @Entry(category = SECOND_PAGE, name = "Disables hand swinging animations (V1)")
     public static boolean noHandSwingV1 = false;
 
     @Entry(category = SECOND_PAGE, name = "Disables hand swinging animations (V2)")
     public static boolean noHandSwingV2 = false;
-
-    @Entry(category = SECOND_PAGE, name = "Disables hand swinging animations (V3)")
-    public static boolean noHandSwingV3 = false;
 
     @Entry(category = SECOND_PAGE, name = "Disables eating and drinking animations")
     public static boolean noFoodSwing = false;
@@ -87,7 +85,7 @@ public class Config extends MidnightConfig implements Global {
     }
 
     public static void configFix() {
-        if (noHandSwingV2 && noHandSwingV1) {
+        if (mc.player != null && noHandSwingV2 && noHandSwingV1) {
             noHandSwingV2 = false;
             noHandSwingV1 = false;
             mc.player.sendMessage(Text.of(PREFIX + Formatting.RED + "CHOOSE ONE OPTION!"), false);

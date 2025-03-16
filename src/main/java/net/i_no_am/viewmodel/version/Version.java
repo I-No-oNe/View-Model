@@ -5,9 +5,10 @@ import com.google.gson.JsonParser;
 import net.fabricmc.loader.api.FabricLoader;
 import net.i_no_am.viewmodel.Global;
 import net.i_no_am.viewmodel.ViewModel;
-import net.minecraft.text.ClickEvent;
-import net.minecraft.text.Style;
+import net.minecraft.client.gui.screen.ConfirmScreen;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
+import net.minecraft.util.Util;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -15,23 +16,40 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
 
-
 public class Version implements Global {
 
-    private static final String SOURCE = "https://raw.githubusercontent.com/I-No-oNe/View-Model/refs/heads/1.21.4-midnight-lib/version";
-    private static boolean sent = false;
+    private final String apiLink;
+    private final String downloadLink;
+    private final double selfVersion;
+    private double apiVersion;
 
-    private static boolean isUpdated() throws Exception {
-        return getLatestVersionFromGitHub().equals(getModVersion());
+    public Version(String apiLink, String downloadLink) {
+        this.apiLink = apiLink;
+        this.downloadLink = downloadLink;
+        this.selfVersion = getSelfVersion();
+        try {
+            this.apiVersion = getApiVersion();
+        } catch (Exception e) {
+            this.apiVersion = 0.0;
+            ViewModel.Log("Error fetching API version: " + e.getMessage());
+        }
     }
 
-    private static String getLatestVersionFromGitHub() throws Exception {
+    public boolean isUpdated() {
+        return getVSelf() >= getVApi();
+    }
+
+    public double getVSelf() {
+        return selfVersion;
+    }
+
+    public double getVApi() {
+        return apiVersion;
+    }
+
+    private double getApiVersion() throws Exception {
         HttpClient client = HttpClient.newHttpClient();
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(SOURCE))
-                .timeout(Duration.ofSeconds(30))
-                .header("Accept", "*/*")
-                .build();
+        HttpRequest request = HttpRequest.newBuilder().uri(URI.create(apiLink)).timeout(Duration.ofSeconds(31)).header("Accept", "application/vnd.github.v3+json").build();
 
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
@@ -40,34 +58,37 @@ public class Version implements Global {
         }
 
         JsonObject jsonResponse = JsonParser.parseString(response.body()).getAsJsonObject();
-        return jsonResponse.get("version").getAsString();
+        String versionString = jsonResponse.get("tag_name").getAsString();
+
+        return parseVersion(versionString);
     }
 
+    private static double getSelfVersion() {
+        String versionString = FabricLoader.getInstance().getModContainer(modId).orElseThrow(() -> new RuntimeException("Mod not found!")).getMetadata().getVersion().getFriendlyString();
+        return parseVersion(versionString);
+    }
 
-    private static String getModVersion() {
-        String fullVersionString = FabricLoader.getInstance().getModContainer(modId).get().getMetadata().getVersion().getFriendlyString();
-        String[] parts = fullVersionString.split("-");
+    private static double parseVersion(String version) {
+        String[] parts = version.split("-");
         for (String part : parts) {
             if (part.matches("\\d+\\.\\d+")) {
-                return part;
+                return Double.parseDouble(part);
             }
         }
-        return "Unknown";
+        return 0.0;
     }
 
-    public static void sendUpdate() throws Exception {
-        if (!isUpdated() && mc.player != null && !sent) {
-            mc.player.sendMessage(Text.of(PREFIX + "§cYou are using an outdated version of View Model!"), false);
-            Text clickableMessage = Text.literal(PREFIX + "§aClick here to update!")
-                    .setStyle(Style.EMPTY
-                            .withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://github.com/I-No-oNe/View-Model/releases/latest"))
-                            .withUnderline(true)
-                            .withColor(0x00FF00)
-                    );
-            mc.player.sendMessage(clickableMessage, false);
-        } else {
-            ViewModel.Log("View Model is up to date!" + "\n View Model Version -> "+ getLatestVersionFromGitHub());
+    public void notifyV() {
+        boolean did = false;
+        if (!did && mc.currentScreen == null && mc.player != null && !isUpdated()) {
+            mc.setScreen(new ConfirmScreen(confirmed -> {
+                if (confirmed) {
+                    Util.getOperatingSystem().open(URI.create(downloadLink));
+                    mc.player.closeScreen();
+                }
+                mc.player.closeScreen();
+            }, Text.of(Formatting.RED + "You are using an outdated version of View Model"), Text.of("Please download the latest version from " + Formatting.GREEN + "modrinth"), Text.of("Download"), Text.of("Continue playing")));
+            did = true;
         }
-        sent = true;
     }
 }
