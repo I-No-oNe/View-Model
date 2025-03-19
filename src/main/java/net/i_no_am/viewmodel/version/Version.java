@@ -15,41 +15,91 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Version implements Global {
 
-    private final String apiLink;
-    private final String downloadLink;
-    private final double selfVersion;
-    private double apiVersion;
+    private static final Map<String, Double> versionCache = new HashMap<>();
+    private final String api;
+    private final String download;
+    private static boolean bl = false;
+    private final double version;
 
-    public Version(String apiLink, String downloadLink) {
-        this.apiLink = apiLink;
-        this.downloadLink = downloadLink;
-        this.selfVersion = getSelfVersion();
+    /**
+     @param api The link to the github repo api.
+     @param download The link to the download page.
+     ***/
+
+    public Version(String api, String download) throws Exception {
+        this.api = api;
+        this.download = download;
+        this.version = getVApi();
+    }
+
+    public static Version create(String apiLink, String downloadLink) {
         try {
-            this.apiVersion = getApiVersion();
+            return new Version(apiLink, downloadLink);
         } catch (Exception e) {
-            this.apiVersion = 0.0;
-            ViewModel.Log("Error fetching API version: " + e.getMessage());
+            throw new RuntimeException(e);
         }
     }
 
-    public boolean isUpdated() {
-        return getVSelf() >= getVApi();
+    public void notifyUpdate(boolean printVersions) {
+        if (!bl && mc.currentScreen == null && mc.player != null && !isUpdated()) {
+            if (printVersions) {
+                ViewModel.Log("Versions: \nCurrent Version: " + getSelf() + "\n" + "Online Version: " + getApi());
+            }
+            mc.setScreen(new ConfirmScreen(confirmed -> {
+                if (confirmed) {
+                    Util.getOperatingSystem().open(URI.create(download));
+                    mc.player.closeScreen();
+                }
+                mc.player.closeScreen();
+            }, Text.of(Formatting.RED + "You are using an outdated version of View Model"), Text.of("Please download the latest version from " + Formatting.GREEN + "Modrinth"), Text.of("Download"), Text.of("Continue playing")));
+            bl = true;
+        }
     }
 
-    public double getVSelf() {
-        return selfVersion;
+    private boolean isUpdated() {
+        return getSelf() >= getApi();
     }
 
-    public double getVApi() {
-        return apiVersion;
+    private double getApi() {
+        return version;
     }
 
-    private double getApiVersion() throws Exception {
+    private static double getSelf() {
+        String versionString = FabricLoader.getInstance().getModContainer(modId)
+                .orElseThrow(() -> new RuntimeException(modId + " Isn't loaded"))
+                .getMetadata().getVersion().getFriendlyString();
+        return parseVersion(versionString);
+    }
+
+    private static double parseVersion(String version) {
+        String[] parts = version.split("-");
+        for (String part : parts) {
+            if (part.matches("\\d+\\.\\d+\\.\\d+")) {
+                String[] numbers = part.split("\\.");
+                return Integer.parseInt(numbers[0]) + (Integer.parseInt(numbers[1]) / 10.0) + (Integer.parseInt(numbers[2]) / 100.0);
+            } else if (part.matches("\\d+\\.\\d+")) {
+                return Double.parseDouble(part);
+            }
+        }
+        return 0.0;
+    }
+
+    private double getVApi() throws Exception {
+        if (versionCache.containsKey(api)) {
+            return versionCache.get(api);
+        }
+
         HttpClient client = HttpClient.newHttpClient();
-        HttpRequest request = HttpRequest.newBuilder().uri(URI.create(apiLink)).timeout(Duration.ofSeconds(31)).header("Accept", "application/vnd.github.v3+json").build();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(api))
+                .timeout(Duration.ofSeconds(600))
+                .header("Accept", "application/vnd.github.v3+json")
+                .build();
 
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
@@ -60,35 +110,8 @@ public class Version implements Global {
         JsonObject jsonResponse = JsonParser.parseString(response.body()).getAsJsonObject();
         String versionString = jsonResponse.get("tag_name").getAsString();
 
-        return parseVersion(versionString);
-    }
-
-    private static double getSelfVersion() {
-        String versionString = FabricLoader.getInstance().getModContainer(modId).orElseThrow(() -> new RuntimeException("Mod not found!")).getMetadata().getVersion().getFriendlyString();
-        return parseVersion(versionString);
-    }
-
-    private static double parseVersion(String version) {
-        String[] parts = version.split("-");
-        for (String part : parts) {
-            if (part.matches("\\d+\\.\\d+")) {
-                return Double.parseDouble(part);
-            }
-        }
-        return 0.0;
-    }
-
-    public void notifyV() {
-        boolean did = false;
-        if (!did && mc.currentScreen == null && mc.player != null && !isUpdated()) {
-            mc.setScreen(new ConfirmScreen(confirmed -> {
-                if (confirmed) {
-                    Util.getOperatingSystem().open(URI.create(downloadLink));
-                    mc.player.closeScreen();
-                }
-                mc.player.closeScreen();
-            }, Text.of(Formatting.RED + "You are using an outdated version of View Model"), Text.of("Please download the latest version from " + Formatting.GREEN + "modrinth"), Text.of("Download"), Text.of("Continue playing")));
-            did = true;
-        }
+        double parsedVersion = parseVersion(versionString);
+        versionCache.put(api, parsedVersion);
+        return parsedVersion;
     }
 }

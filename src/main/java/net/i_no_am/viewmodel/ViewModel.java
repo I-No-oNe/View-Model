@@ -3,6 +3,7 @@ package net.i_no_am.viewmodel;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.i_no_am.viewmodel.config.Config;
 import net.i_no_am.viewmodel.version.Version;
 import net.minecraft.client.option.KeyBinding;
@@ -17,32 +18,32 @@ public class ViewModel implements ModInitializer, Global {
 
     @Override
     public void onInitialize() {
-        Log("ViewModel is initializing...");
-        Log("View Model is checking for updates...");
-        Log("View Model Config is registering...");
+        Log("is initializing...");
+        Log("is checking for updates...");
+        Log("Config is registering...");
         Config.register();
-        Log("View Model Config has been registered!");
-        Log("ViewModel has been initialized!");
+        Log("Config has been registered!");
+        Log("has been initialized!");
+
+        WorldRenderEvents.AFTER_SETUP.register((context) -> {
+            Version.create(API, DOWNLOAD).notifyUpdate(isDev);
+        });
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            new Version(API, DOWNLOAD).notifyV();
             Config.configFix();
-            if (BIND.wasPressed()) {
-                Log("Opening View Model GUI...");
-                mc.setScreen(Config.getScreen(mc.currentScreen, modId));
-            }
+            if (BIND.wasPressed()) mc.setScreen(Config.getScreen(mc.currentScreen, modId));
         });
     }
 
     public static void Log(String message) {
-        if (isDev) return;
-        System.out.println(message);
+        if (!isDev) return;
+        System.out.println(LOG + " " + message);
     }
 }
+
 /* TODO
- * 1. Update README.md
- * 2. Improve check for updates on startup (Better handling and messages instead of a screen mixin)
- * 3. Better debuging
- * 4. Add more comments to GUI
- * 5. Update features
+ * 1. Update README.md -> add option to see old readME + add an explanation of the config lib change.
+ * 2. Improve check for updates on startup (Better handling and messages instead of a screen mixin) - DONE?
+ * 3. Better debug - DONE?
+ * 4. Update features
  */
