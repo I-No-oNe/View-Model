@@ -12,18 +12,18 @@ import org.lwjgl.glfw.GLFW;
 
 public class ViewModel implements ModInitializer, Global {
 
-    public static final KeyBinding BIND = KeyBindingHelper.registerKeyBinding(new KeyBinding("View Model GUI", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_V, KeyBinding.UI_CATEGORY));
+    public static final KeyBinding BIND = KeyBindingHelper.registerKeyBinding(new KeyBinding("View Model GUI", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_V, KeyBinding.MISC_CATEGORY));
     public static final String API = "https://api.github.com/repos/I-No-oNe/View-Model/releases/latest";
     public static final String DOWNLOAD = "https://modrinth.com/mod/no-ones-view-model/versions";
 
     @Override
     public void onInitialize() {
-        Log("is initializing...");
-        Log("is checking for updates...");
+        Log("Initializing...");
+        Log("Checking for updates...");
         Log("Config is registering...");
         Config.register();
         Log("Config has been registered!");
-        Log("has been initialized!");
+        Log("Has been initialized!");
 
         WorldRenderEvents.AFTER_SETUP.register((context) -> {
             Version.create(API, DOWNLOAD).notifyUpdate(isDev);
@@ -37,13 +37,6 @@ public class ViewModel implements ModInitializer, Global {
 
     public static void Log(String message) {
         if (!isDev) return;
-        System.out.println(LOG + " " + message);
+        System.out.println("[ViewModel] " + message);
     }
 }
-
-/* TODO
- * 1. Update README.md -> add option to see old readME + add an explanation of the config lib change.
- * 2. Improve check for updates on startup (Better handling and messages instead of a screen mixin) - DONE?
- * 3. Better debug - DONE?
- * 4. Update features
- */

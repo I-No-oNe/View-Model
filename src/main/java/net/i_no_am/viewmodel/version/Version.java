@@ -70,22 +70,21 @@ public class Version implements Global {
     }
 
     private static double getSelf() {
-        String versionString = FabricLoader.getInstance().getModContainer(modId)
-                .orElseThrow(() -> new RuntimeException(modId + " Isn't loaded"))
-                .getMetadata().getVersion().getFriendlyString();
+        String versionString = FabricLoader.getInstance().getModContainer(modId).orElseThrow(() -> new RuntimeException(modId + " Isn't loaded")).getMetadata().getVersion().getFriendlyString();
         return parseVersion(versionString);
     }
 
     private static double parseVersion(String version) {
         String[] parts = version.split("-");
+
         for (String part : parts) {
             if (part.matches("\\d+\\.\\d+\\.\\d+")) {
-                String[] numbers = part.split("\\.");
-                return Integer.parseInt(numbers[0]) + (Integer.parseInt(numbers[1]) / 10.0) + (Integer.parseInt(numbers[2]) / 100.0);
-            } else if (part.matches("\\d+\\.\\d+")) {
-                return Double.parseDouble(part);
-            }
+                String[] versionNumbers = part.split("\\.");
+                double parsedVersion = Double.parseDouble(versionNumbers[0] + "." + versionNumbers[1]);
+                return parsedVersion * 10;
+            } else if (part.matches("\\d+\\.\\d+")) return Double.parseDouble(part);
         }
+
         return 0.0;
     }
 
@@ -95,11 +94,7 @@ public class Version implements Global {
         }
 
         HttpClient client = HttpClient.newHttpClient();
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(api))
-                .timeout(Duration.ofSeconds(600))
-                .header("Accept", "application/vnd.github.v3+json")
-                .build();
+        HttpRequest request = HttpRequest.newBuilder().uri(URI.create(api)).timeout(Duration.ofSeconds(600)).header("Accept", "application/vnd.github.v3+json").build();
 
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
