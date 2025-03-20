@@ -85,7 +85,7 @@ public class Config extends MidnightConfig implements Global {
     }
 
     public static void configFix(boolean bl, boolean bl1) {
-        if (bl == bl1 && !bl) {
+        if (bl == bl1 && bl) {
             bl = false;
             bl1 = false;
             mc.player.sendMessage(Text.of(PREFIX + Formatting.RED + "Choose one swing method!"), false);
