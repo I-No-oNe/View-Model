@@ -84,10 +84,10 @@ public class Config extends MidnightConfig implements Global {
         MidnightConfig.init(modId, Config.class);
     }
 
-    public static void configFix() {
-        if (mc.player != null && mc.player.isLoaded() && (noHandSwingV2 && noHandSwingV1)) {
-            noHandSwingV2 = false;
-            noHandSwingV1 = false;
+    public static void configFix(boolean bl, boolean bl1) {
+        if (bl == bl1 && !bl) {
+            bl = false;
+            bl1 = false;
             mc.player.sendMessage(Text.of(PREFIX + Formatting.RED + "Choose one swing method!"), false);
         }
     }

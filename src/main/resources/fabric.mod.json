@@ -24,6 +24,7 @@
     "viewmodel.mixins.json"
   ],
   "depends": {
+    "midnightlib" : ">=${midnightlib_version}",
     "fabricloader": ">=${loader_version}",
     "fabric": "*",
     "minecraft": ">=${minecraft_version}"

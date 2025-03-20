@@ -30,8 +30,8 @@ public class ViewModel implements ModInitializer, Global {
         });
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            Config.configFix();
             if (BIND.wasPressed()) mc.setScreen(Config.getScreen(mc.currentScreen, modId));
+            if (mc.player != null && mc.world != null) Config.configFix(Config.noHandSwingV1, Config.noHandSwingV2);
         });
     }
 
