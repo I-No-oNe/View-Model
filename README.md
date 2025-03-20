@@ -24,7 +24,7 @@ How to use?
 ![Demonstration](assets/example.png)
 -----------------
 
-**BE AWARE THAT YOU MUST TO DOWNLOAD THE [**MIDNIGHT CONFIG**](https://modrinth.com/mod/midnightlib) LIBRARY IN ORDER TO THE MOD TO WORK!**
+**BE AWARE THAT YOU MUST TO DOWNLOAD THE [**MIDNIGHT LIB**](https://modrinth.com/mod/midnightlib) IN ORDER TO THE MOD TO WORK!**
 
 ------------------
 **thank you for using this mod** 🙏
