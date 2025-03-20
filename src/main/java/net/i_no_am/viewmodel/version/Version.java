@@ -5,52 +5,108 @@ import com.google.gson.JsonParser;
 import net.fabricmc.loader.api.FabricLoader;
 import net.i_no_am.viewmodel.Global;
 import net.i_no_am.viewmodel.ViewModel;
+import net.minecraft.client.gui.screen.ConfirmScreen;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
+import net.minecraft.util.Util;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.time.Duration;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Version implements Global {
 
-    private static final String REPO = "https://api.github.com/repos/I-No-oNe/View-Model/releases/latest";
+    private static final Map<String, Double> versionCache = new HashMap<>();
+    private final String api;
+    private final String download;
+    private static boolean bl = false;
+    private final double version;
 
-    public static void checkUpdates() {
+    /**
+     @param api The link to the github repo api.
+     @param download The link to the download page.
+     ***/
+
+    public Version(String api, String download) throws Exception {
+        this.api = api;
+        this.download = download;
+        this.version = getVApi();
+    }
+
+    public static Version create(String apiLink, String downloadLink) {
         try {
-            String latestVersion = getLatestVersionFromGitHub();
-            if (!latestVersion.equals(getModVersion())) {
-                ViewModel.isOutdated = true;
-            }
-        } catch (Exception ignored) {}
-    }
-
-    private static String getLatestVersionFromGitHub() throws Exception {
-        HttpURLConnection connection = (HttpURLConnection) new URL(Version.REPO).openConnection();
-
-        connection.setRequestMethod("GET");
-        connection.setRequestProperty("Accept", "application/vnd.github.v3+json");
-
-        BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-        StringBuilder response = new StringBuilder();
-        String inputLine;
-        while ((inputLine = in.readLine()) != null) {
-            response.append(inputLine);
+            return new Version(apiLink, downloadLink);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        in.close();
-
-        JsonObject jsonResponse = JsonParser.parseString(response.toString()).getAsJsonObject();
-        return jsonResponse.get("tag_name").getAsString();
     }
 
+    public void notifyUpdate(boolean printVersions) {
+        if (!bl && mc.currentScreen == null && mc.player != null && !isUpdated()) {
+            if (printVersions) {
+                ViewModel.Log("Versions: \nCurrent Version: " + getSelf() + "\n" + "Online Version: " + getApi());
+            }
+            mc.setScreen(new ConfirmScreen(confirmed -> {
+                if (confirmed) {
+                    Util.getOperatingSystem().open(URI.create(download));
+                    mc.player.closeScreen();
+                }
+                mc.player.closeScreen();
+            }, Text.of(Formatting.RED + "You are using an outdated version of View Model"), Text.of("Please download the latest version from " + Formatting.GREEN + "Modrinth"), Text.of("Download"), Text.of("Continue playing")));
+            bl = true;
+        }
+    }
 
-    public static String getModVersion() {
-        String fullVersionString = FabricLoader.getInstance().getModContainer(modId).get().getMetadata().getVersion().getFriendlyString();
-        String[] parts = fullVersionString.split("-");
+    private boolean isUpdated() {
+        return getSelf() >= getApi();
+    }
+
+    private double getApi() {
+        return version;
+    }
+
+    private static double getSelf() {
+        String versionString = FabricLoader.getInstance().getModContainer(modId).orElseThrow(() -> new RuntimeException(modId + " Isn't loaded")).getMetadata().getVersion().getFriendlyString();
+        return parseVersion(versionString);
+    }
+
+    private static double parseVersion(String version) {
+        String[] parts = version.split("-");
+
         for (String part : parts) {
-            if (part.matches("\\d+\\.\\d+")) {
-                return part;
-            }
+            if (part.matches("\\d+\\.\\d+\\.\\d+")) {
+                String[] versionNumbers = part.split("\\.");
+                double parsedVersion = Double.parseDouble(versionNumbers[0] + "." + versionNumbers[1]);
+                return parsedVersion * 10;
+            } else if (part.matches("\\d+\\.\\d+")) return Double.parseDouble(part);
         }
-        return "Unknown";
+
+        return 0.0;
+    }
+
+    private double getVApi() throws Exception {
+        if (versionCache.containsKey(api)) {
+            return versionCache.get(api);
+        }
+
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder().uri(URI.create(api)).timeout(Duration.ofSeconds(600)).header("Accept", "application/vnd.github.v3+json").build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() != 200) {
+            throw new RuntimeException("Failed to fetch latest version: " + response.statusCode());
+        }
+
+        JsonObject jsonResponse = JsonParser.parseString(response.body()).getAsJsonObject();
+        String versionString = jsonResponse.get("tag_name").getAsString();
+
+        double parsedVersion = parseVersion(versionString);
+        versionCache.put(api, parsedVersion);
+        return parsedVersion;
     }
 }

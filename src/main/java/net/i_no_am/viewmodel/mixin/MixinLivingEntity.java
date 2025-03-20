@@ -12,12 +12,12 @@ public abstract class MixinLivingEntity {
 
     @Inject(method = "getHandSwingDuration", at = @At("HEAD"), cancellable = true)
     private void onGetHandSwingDuration(CallbackInfoReturnable<Integer> cir) {
-        if (Config.noHandSwingV1.getVal() || Config.noHandSwingV2.getVal()) {
+        if (Config.noHandSwingV1 || Config.noHandSwingV2) {
             cir.setReturnValue(0);
             cir.cancel();
         }
-        if (!Config.noHandSwingV1.getVal() && !Config.noHandSwingV2.getVal()) {
-            cir.setReturnValue(Config.handSpeedSwing.getVal().intValue() + 2);
+        if (!Config.noHandSwingV1 && !Config.noHandSwingV2) {
+            cir.setReturnValue(Config.handSpeedSwing + 2);
             cir.cancel();
         }
     }
