@@ -5,6 +5,7 @@ import com.google.gson.JsonParser;
 import net.fabricmc.loader.api.FabricLoader;
 import net.i_no_am.viewmodel.Global;
 import net.i_no_am.viewmodel.ViewModel;
+import net.i_no_am.viewmodel.config.Config;
 import net.minecraft.client.gui.screen.ConfirmScreen;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -31,7 +32,7 @@ public class Version implements Global {
      @param download The link to the download page.
      ***/
 
-    public Version(String api, String download) throws Exception {
+    private Version(String api, String download) throws Exception {
         this.api = api;
         this.download = download;
         this.version = getVApi();
@@ -46,7 +47,7 @@ public class Version implements Global {
     }
 
     public void notifyUpdate(boolean printVersions) {
-        if (!bl && mc.currentScreen == null && mc.player != null && !isUpdated()) {
+        if (!bl && mc.currentScreen == null && mc.player != null && !isUpdated() && Config.shouldCheck) {
             if (printVersions) {
                 ViewModel.Log("Versions: \nCurrent Version: " + getSelf() + "\n" + "Online Version: " + getApi());
             }
