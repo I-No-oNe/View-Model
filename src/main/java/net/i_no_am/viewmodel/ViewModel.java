@@ -28,9 +28,10 @@ public class ViewModel implements ModInitializer, Global {
         WorldRenderEvents.AFTER_SETUP.register((context) -> Version.create(API, DOWNLOAD).notifyUpdate(isDev));
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            if (BIND.wasPressed()) {
-                mc.setScreen(Config.getScreen(mc.currentScreen, modId));
-                if (mc.currentScreen.shouldCloseOnEsc()) MidnightConfig.write(modId);
+            if (BIND.wasPressed() && mc.player != null) {
+                var screenConfig = Config.getScreen(mc.currentScreen, modId);
+                mc.setScreen(screenConfig);
+                if (screenConfig.shouldCloseOnEsc()) MidnightConfig.write(modId);
             }
             if (mc.player != null && mc.world != null) Config.configFix();
         });

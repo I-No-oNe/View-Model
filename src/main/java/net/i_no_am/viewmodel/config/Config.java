@@ -95,6 +95,7 @@ public class Config extends MidnightConfig implements Global {
             noHandSwingV2 = false;
             if (!sentOnce && mc != null && mc.player != null) {
                 mc.player.sendMessage(Text.of(PREFIX + Formatting.RED + "Choose one swing method!"), false);
+                MidnightConfig.write(modId);
                 sentOnce = true;
             }
         }
