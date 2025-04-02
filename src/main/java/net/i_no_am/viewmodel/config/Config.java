@@ -7,6 +7,7 @@ import net.minecraft.util.Formatting;
 
 public class Config extends MidnightConfig implements Global {
 
+    public static boolean sentOnce = false;
     public final static String FIRST_PAGE = "Settings";
     public final static String SECOND_PAGE = "Advanced Settings";
 
@@ -87,11 +88,15 @@ public class Config extends MidnightConfig implements Global {
         MidnightConfig.init(modId, Config.class);
     }
 
-    public static void configFix(boolean bl, boolean bl1) {
-        if (bl == bl1 && bl) {
-            bl = false;
-            bl1 = false;
-            mc.player.sendMessage(Text.of(PREFIX + Formatting.RED + "Choose one swing method!"), false);
+
+    public static void configFix() {
+        if (noHandSwingV1 == noHandSwingV2 && noHandSwingV2) {
+            noHandSwingV1 = false;
+            noHandSwingV2 = false;
+            if (!sentOnce && mc != null && mc.player != null) {
+                mc.player.sendMessage(Text.of(PREFIX + Formatting.RED + "Choose one swing method!"), false);
+                sentOnce = true;
+            }
         }
     }
 }
