@@ -36,7 +36,7 @@ public class Version implements Global {
     private Version(@Nullable String api, @Nullable String download) throws Exception {
         this.api = api;
         this.download = download;
-        this.version = getVApi();
+        this.version = Config.shouldCheck ? getVApi() : 0.0;
     }
 
     public static Version create(String apiLink, String downloadLink) {
