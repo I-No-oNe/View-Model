@@ -4,10 +4,12 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.fabricmc.loader.api.FabricLoader;
 import net.i_no_am.viewmodel.Global;
+import net.i_no_am.viewmodel.config.Config;
 import net.minecraft.client.gui.screen.ConfirmScreen;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Util;
+import org.jetbrains.annotations.Nullable;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -20,20 +22,20 @@ import java.util.Map;
 public class Version implements Global {
 
     private static final Map<String, Double> versionCache = new HashMap<>();
-    private final String api;
-    private final String download;
+    @Nullable private final String api;
+    @Nullable private final String download;
     private static boolean bl = false;
     private final double version;
 
     /**
-     @param api The link to the github repo api.
+     @param api The link to the GITHUB repo api.
      @param download The link to the download page.
      ***/
 
-    public Version(String api, String download) throws Exception {
+    public Version(@Nullable String api,@Nullable String download) throws Exception {
         this.api = api;
         this.download = download;
-        this.version = getVApi();
+        this.version = Config.shouldCheck.getVal() ? getVApi() : 0.0;
     }
 
     public static Version create(String apiLink, String downloadLink) {
@@ -45,7 +47,7 @@ public class Version implements Global {
     }
 
     public void notifyUpdate(boolean printVersions) {
-        if (!bl && mc.currentScreen == null && mc.player != null && !isUpdated()) {
+        if (!bl && mc.currentScreen == null && mc.player != null && !isUpdated() && Config.shouldCheck.getVal()) {
             if (printVersions) {
                 System.out.println("Versions: \nCurrent Version: " + getSelf() + "\n" + "Online Version: " + getApi());
             }
