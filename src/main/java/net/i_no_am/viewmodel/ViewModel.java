@@ -11,6 +11,8 @@ import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import org.lwjgl.glfw.GLFW;
 
+import static net.i_no_am.viewmodel.version.Version.Utils.log;
+
 public class ViewModel implements ModInitializer, Global {
     public static final KeyBinding BIND = KeyBindingHelper.registerKeyBinding(new KeyBinding("View Model GUI", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_V, KeyBinding.MISC_CATEGORY));
     public static final String API = "https://api.github.com/repos/I-No-oNe/View-Model/releases/latest";
@@ -18,15 +20,14 @@ public class ViewModel implements ModInitializer, Global {
 
     @Override
     public void onInitialize() {
-        Log("Initializing...");
-        Log("Checking for updates...");
-        Log("Config is registering...");
+        log("Initializing...");
+        log("Checking for updates...");
+        log("Config is registering...");
         Config.register();
-        Log("Config has been registered!");
-        Log("Has been initialized!");
+        log("Config has been registered!");
+        log("Has been initialized!");
 
         WorldRenderEvents.AFTER_SETUP.register((context) -> Version.create(API, DOWNLOAD).notifyUpdate(isDev));
-
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             if (BIND.wasPressed() && mc.player != null) {
                 var screenConfig = Config.getScreen(mc.currentScreen, modId);
@@ -35,10 +36,5 @@ public class ViewModel implements ModInitializer, Global {
             }
             if (mc.player != null && mc.world != null) Config.configFix();
         });
-    }
-
-    public static void Log(String message) {
-        if (!isDev) return;
-        System.out.println("[ViewModel] " + message);
     }
 }

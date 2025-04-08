@@ -15,7 +15,8 @@ public class Config extends MidnightConfig implements Global {
     @Comment(category = FIRST_PAGE, centered = true)
     public static String firstMsg;
 
-    @Entry(requiredMod = "dummy", name = "dummy")
+    @Condition(requiredModId = "SSL-Dummy")
+    @Entry(category = FIRST_PAGE,name = "dummy")
     public static boolean shouldCheck = true;
 
     @Comment(category = FIRST_PAGE, centered = true)
