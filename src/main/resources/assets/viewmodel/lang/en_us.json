@@ -1,0 +1,32 @@
+{
+  "viewmodel.midnightconfig.title": "ViewModel Config",
+
+  "viewmodel.midnightconfig.category.transforms": "Transforms",
+  "viewmodel.midnightconfig.category.swing": "Swing Dynamics",
+  "viewmodel.midnightconfig.category.eating": "Consumables",
+  "viewmodel.midnightconfig.category.misc": "Misc",
+
+  "viewmodel.midnightconfig.credits": "§o§a§nMade by I-No-oNe§r",
+
+  "viewmodel.midnightconfig.transformTargetTitle": "— Hands Settings —",
+  "viewmodel.midnightconfig.HandsMode": "Transform Target",
+  "viewmodel.midnightconfig.enum.HandsTarget.BOTH": "Arm & Item",
+  "viewmodel.midnightconfig.enum.HandsTarget.HANDS_ONLY": "Held Item Only",
+  "viewmodel.midnightconfig.enum.HandsTarget.ARMS_ONLY": "Bare Arm Only",
+
+  "viewmodel.midnightconfig.mainHandTitle": "— Main Hand —",
+  "viewmodel.midnightconfig.offHandTitle": "— Off Hand —",
+
+  "viewmodel.midnightconfig.swingSettingsTitle": "— Swing Settings —",
+  "viewmodel.midnightconfig.swingProgressTitle": "— Progress Offsets —",
+  "viewmodel.midnightconfig.swingTogglesTitle": "— Swing Toggles —",
+
+  "viewmodel.midnightconfig.eatingTitle": "— Animation Toggles —",
+  "viewmodel.midnightconfig.eatingIntensityTitle": "— Custom Intensity —",
+
+  "viewmodel.midnightconfig.miscTitle": "— Extra Features —",
+
+  "viewmodel.midnightconfig.enum.SwingState.DEFAULT": "Default",
+  "viewmodel.midnightconfig.enum.SwingState.MAINHAND": "Main Hand Only",
+  "viewmodel.midnightconfig.enum.SwingState.OFFHAND": "Off Hand Only"
+}
