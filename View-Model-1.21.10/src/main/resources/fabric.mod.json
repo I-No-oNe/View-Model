@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "id": "viewmodel",
+  "version": "${version}",
+  "name": "View Model",
+  "description": "A view model mod by I-No-oNe",
+  "authors": [
+    "I-No-oNe"
+  ],
+  "contact": {
+    "homepage": "https://github.com/I-No-oNe",
+    "sources": "https://github.com/I-No-oNe/view-model"
+  },
+  "license": "MIT",
+  "icon": "assets/viewmodel/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "client": [],
+    "main": [
+      "net.i_no_am.viewmodel.ViewModel"
+    ]
+  },
+  "mixins": [
+    "viewmodel.mixins.json"
+  ],
+  "depends": {
+    "midnightlib" : ">=${midnightlib_version}",
+    "fabricloader": ">=${loader_version}",
+    "fabric": "*",
+    "minecraft": ">=1.21.9"
+  }
+}
