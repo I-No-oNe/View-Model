@@ -1,8 +1,10 @@
 package net.i_no_am.viewmodel.mixin;
 
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.i_no_am.viewmodel.Global;
@@ -29,10 +31,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class MixinItemInHandRenderer implements Global {
 
     @Shadow private ItemStack mainHandItem;
-    @Shadow private ItemStack offHandItem;
-    @Shadow private float offHandHeight;
-    @Shadow protected abstract boolean shouldInstantlyReplaceVisibleItem(ItemStack currentlyVisibleItem, ItemStack expectedItem);
-    @Shadow private float mainHandHeight;
 
     @Inject(method = "submitArmWithItem", at = @At("HEAD"))
     private void onRenderHandsPos(AbstractClientPlayer player, float frameInterp, float xRot, InteractionHand hand, float attack, ItemStack itemStack, float inverseArmHeight, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int lightCoords, CallbackInfo ci) {
@@ -92,23 +90,14 @@ public abstract class MixinItemInHandRenderer implements Global {
         return original || Config.skipSwapping;
     }
 
-    @ModifyArg(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Mth;clamp(FFF)F", ordinal = 2), index = 0)
-    private float modifyEquipProgressMainHand(float value) {
-        if (mc.player == null) return value;
-
-        ItemStack currentStack = mc.player.getMainHandItem();
-        if (Config.oldAnimations && !Config.skipSwapping) {
-            mainHandItem = currentStack;
-        }
-
-        float progress = Config.oldAnimations ? 1 : (float) Math.pow(mc.player.getItemSwapScale(1), 3);
-
-        return (ItemStack.matches(mainHandItem, currentStack) ? progress : 0) - mainHandHeight;
+    @WrapOperation(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/ItemInHandRenderer;shouldInstantlyReplaceVisibleItem(Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/item/ItemStack;)Z", ordinal = 0))
+    private boolean skipMainHandSwapAnimation(ItemInHandRenderer instance, ItemStack currentlyVisibleItem, ItemStack expectedItem, Operation<Boolean> original) {
+        return Config.oldAnimations || original.call(instance, currentlyVisibleItem, expectedItem);
     }
 
-    @ModifyArg(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Mth;clamp(FFF)F", ordinal = 3), index = 0)
-    private float skipOffHandSwapAnim(float value) {
-        return Config.skipSwapping ? (shouldInstantlyReplaceVisibleItem(offHandItem, mc.player.getOffhandItem()) ? 1 : 0) - offHandHeight : value;
+    @ModifyExpressionValue(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;getItemSwapScale(F)F"))
+    private float removeItemSwapScale(float original) {
+        return Config.oldAnimations ? 1.0F : original;
     }
 
     @WrapMethod(method = "applyEatTransform")
