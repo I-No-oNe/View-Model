@@ -1,8 +1,10 @@
 package net.i_no_am.viewmodel.mixin;
 
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.i_no_am.viewmodel.Global;
 import net.i_no_am.viewmodel.config.Config;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
@@ -29,10 +31,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class MixinHeldItemRenderer implements Global {
 
     @Shadow private ItemStack mainHand;
-    @Shadow private ItemStack offHand;
-    @Shadow private float equipProgressOffHand;
-    @Shadow protected abstract boolean shouldSkipHandAnimationOnSwap(ItemStack from, ItemStack to);
-    @Shadow private float equipProgressMainHand;
 
     @Inject(method = "renderFirstPersonItem", at = @At("HEAD"))
     private void onRenderHandsPos(AbstractClientPlayerEntity player, float tickProgress, float pitch, Hand hand, float swingProgress, ItemStack item, float equipProgress, MatrixStack matrixStack, OrderedRenderCommandQueue queue, int light, CallbackInfo ci) {
@@ -92,23 +90,14 @@ public abstract class MixinHeldItemRenderer implements Global {
         return original || Config.skipSwapping;
     }
 
-    @ModifyArg(method = "updateHeldItems", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/math/MathHelper;clamp(FFF)F", ordinal = 2), index = 0)
-    private float modifyEquipProgressMainHand(float value) {
-        if (mc.player == null) return value;
-
-        ItemStack currentStack = mc.player.getMainHandStack();
-        if (Config.oldAnimations && !Config.skipSwapping) {
-            mainHand = currentStack;
-        }
-
-        float progress = Config.oldAnimations ? 1 : (float) Math.pow(mc.player.getHandEquippingProgress(1), 3);
-
-        return (ItemStack.areEqual(mainHand, currentStack) ? progress : 0) - equipProgressMainHand;
+    @WrapOperation(method = "updateHeldItems", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/item/HeldItemRenderer;shouldSkipHandAnimationOnSwap(Lnet/minecraft/item/ItemStack;Lnet/minecraft/item/ItemStack;)Z", ordinal = 0))
+    private boolean skipMainHandSwapAnimation(HeldItemRenderer instance, ItemStack currentlyVisibleItem, ItemStack expectedItem, Operation<Boolean> original) {
+        return Config.oldAnimations || original.call(instance, currentlyVisibleItem, expectedItem);
     }
 
-    @ModifyArg(method = "updateHeldItems", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/math/MathHelper;clamp(FFF)F", ordinal = 3), index = 0)
-    private float skipOffHandSwapAnim(float value) {
-        return Config.skipSwapping ? (shouldSkipHandAnimationOnSwap(offHand, mc.player.getOffHandStack()) ? 1 : 0) - equipProgressOffHand : value;
+    @ModifyExpressionValue(method = "updateHeldItems", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;getHandEquippingProgress(F)F"))
+    private float removeItemSwapScale(float original) {
+        return Config.oldAnimations ? 1.0F : original;
     }
 
     @WrapMethod(method = "applyEatOrDrinkTransformation")
