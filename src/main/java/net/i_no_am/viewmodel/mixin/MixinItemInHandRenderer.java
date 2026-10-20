@@ -33,50 +33,29 @@ public abstract class MixinItemInHandRenderer implements Global {
     @Shadow private ItemStack mainHandItem;
 
     @Inject(method = "renderArmWithItem", at = @At("HEAD"))
-    private void onRenderHandsPos(AbstractClientPlayer player, float frameInterp, float xRot, InteractionHand hand, float attack, ItemStack itemStack, float inverseArmHeight, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int lightCoords, CallbackInfo ci) {
-        poseStack.pushPose(); // pos/rot applied per-target: arm at renderPlayerArm, item at renderItem
-    }
-
-    @Unique
-    private void applyPosRot(InteractionHand hand, PoseStack poseStack) {
-        if (hand == InteractionHand.MAIN_HAND) {
-            poseStack.mulPose(Axis.XP.rotationDegrees(Config.mainRotationX));
-            poseStack.mulPose(Axis.YP.rotationDegrees(Config.mainRotationY));
-            poseStack.mulPose(Axis.ZP.rotationDegrees(Config.mainRotationZ));
-            poseStack.translate(Config.mainPositionX, Config.mainPositionY, Config.mainPositionZ);
-        } else {
-            poseStack.mulPose(Axis.XP.rotationDegrees(Config.offRotationX));
-            poseStack.mulPose(Axis.YP.rotationDegrees(Config.offRotationY));
-            poseStack.mulPose(Axis.ZP.rotationDegrees(Config.offRotationZ));
-            poseStack.translate(Config.offPositionX, Config.offPositionY, Config.offPositionZ);
-        }
+    private void pushArmPose(AbstractClientPlayer player, float frameInterp, float xRot, InteractionHand hand, float attack, ItemStack itemStack, float inverseArmHeight, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int lightCoords, CallbackInfo ci) {
+        poseStack.pushPose(); // transforms are applied per target: arm at renderPlayerArm, item at renderItem
     }
 
     @Inject(method = "renderArmWithItem", at = @At("TAIL"))
-    private void popMatrix(AbstractClientPlayer player, float frameInterp, float xRot, InteractionHand hand, float attack, ItemStack itemStack, float inverseArmHeight, PoseStack matrixStack, SubmitNodeCollector submitNodeCollector, int lightCoords, CallbackInfo ci) {
-        matrixStack.popPose();
+    private void popArmPose(AbstractClientPlayer player, float frameInterp, float xRot, InteractionHand hand, float attack, ItemStack itemStack, float inverseArmHeight, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int lightCoords, CallbackInfo ci) {
+        poseStack.popPose();
     }
 
     @Inject(method = "renderArmWithItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/ItemInHandRenderer;renderItem(Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/item/ItemDisplayContext;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;I)V"))
-    private void scaleItems(AbstractClientPlayer player, float frameInterp, float xRot, InteractionHand hand, float swingProgress, ItemStack itemStack, float inverseArmHeight, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int lightCoords, CallbackInfo ci) {
-        if (Config.HandsMode != Config.HandsTarget.ARMS_ONLY) {
-            applyPosRot(hand, poseStack);
-            float scale = hand == InteractionHand.MAIN_HAND ? Config.mainHandScale : Config.offHandScale;
-            poseStack.scale(scale, scale, scale);
-        }
+    private void applyItemTransform(AbstractClientPlayer player, float frameInterp, float xRot, InteractionHand hand, float swingProgress, ItemStack itemStack, float inverseArmHeight, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int lightCoords, CallbackInfo ci) {
+        if (Config.HandsMode == Config.HandsTarget.ARMS_ONLY) return;
+        applyHandTransform(hand, poseStack);
     }
 
     @Inject(method = "renderArmWithItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/ItemInHandRenderer;renderPlayerArm(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;IFFLnet/minecraft/world/entity/HumanoidArm;)V"), cancellable = true)
-    private void noHands(AbstractClientPlayer player, float frameInterp, float xRot, InteractionHand hand, float attack, ItemStack itemStack, float inverseArmHeight, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int lightCoords, CallbackInfo ci) {
+    private void hideArmsOnDemand(AbstractClientPlayer player, float frameInterp, float xRot, InteractionHand hand, float attack, ItemStack itemStack, float inverseArmHeight, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int lightCoords, CallbackInfo ci) {
         if (Config.noHandRender) {
             ci.cancel();
             return;
         }
-        if (Config.HandsMode != Config.HandsTarget.HANDS_ONLY) {
-            applyPosRot(hand, poseStack);
-            float scale = hand == InteractionHand.MAIN_HAND ? Config.mainHandScale : Config.offHandScale;
-            poseStack.scale(scale, scale, scale);
-        }
+        if (Config.HandsMode == Config.HandsTarget.HANDS_ONLY) return;
+        applyHandTransform(hand, poseStack);
     }
 
     @ModifyArg(method = "renderHandsWithItems(FLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;Lnet/minecraft/client/player/LocalPlayer;I)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/ItemInHandRenderer;renderArmWithItem(Lnet/minecraft/client/player/AbstractClientPlayer;FFLnet/minecraft/world/InteractionHand;FLnet/minecraft/world/item/ItemStack;FLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;I)V", ordinal = 0), index = 4)
@@ -90,6 +69,25 @@ public abstract class MixinItemInHandRenderer implements Global {
         return swing + Config.offSwingProgress;
     }
 
+
+    @Unique
+    private void applyHandTransform(InteractionHand hand, PoseStack poseStack) {
+        if (hand == InteractionHand.MAIN_HAND) {
+            poseStack.mulPose(Axis.XP.rotationDegrees(Config.mainRotationX));
+            poseStack.mulPose(Axis.YP.rotationDegrees(Config.mainRotationY));
+            poseStack.mulPose(Axis.ZP.rotationDegrees(Config.mainRotationZ));
+            poseStack.translate(Config.mainPositionX, Config.mainPositionY, Config.mainPositionZ);
+            float scale = Config.mainHandScale;
+            poseStack.scale(scale, scale, scale);
+        } else {
+            poseStack.mulPose(Axis.XP.rotationDegrees(Config.offRotationX));
+            poseStack.mulPose(Axis.YP.rotationDegrees(Config.offRotationY));
+            poseStack.mulPose(Axis.ZP.rotationDegrees(Config.offRotationZ));
+            poseStack.translate(Config.offPositionX, Config.offPositionY, Config.offPositionZ);
+            float scale = Config.offHandScale;
+            poseStack.scale(scale, scale, scale);
+        }
+    }
 
     @ModifyReturnValue(method = "shouldInstantlyReplaceVisibleItem", at = @At("RETURN"))
     private boolean skipSwapAnimation(boolean original) {
@@ -122,7 +120,7 @@ public abstract class MixinItemInHandRenderer implements Global {
     }
 
     @Unique
-    private void applyCustomEatOrDrinkTransformation(PoseStack poseStack, float frameInterp, HumanoidArm arm,  ItemStack stack) {
+    private void applyCustomEatOrDrinkTransformation(PoseStack poseStack, float frameInterp, HumanoidArm arm, ItemStack stack) {
         if (mc.player == null) return;
 
         float maxUseTime = (float) stack.getUseDuration(mc.player);
@@ -148,7 +146,7 @@ public abstract class MixinItemInHandRenderer implements Global {
         float y = -0.08F - 0.18F * intro - 0.16F * reach - 0.05F * finish + bob + flutter;
         float z = -0.02F - 0.08F * intro - 0.10F * reach - 0.04F * finish;
 
-        poseStack.translate(x, y, z);
+        poseStack.translate(x * Config.eatX, y * Config.eatY, z);
 
         poseStack.mulPose(Axis.ZP.rotationDegrees(side * (4.0F + 10.0F * intro + 18.0F * finish + orbit * 8.0F)));
         poseStack.mulPose(Axis.YP.rotationDegrees(side * (14.0F + 28.0F * intro + 42.0F * reach + 18.0F * finish)));
