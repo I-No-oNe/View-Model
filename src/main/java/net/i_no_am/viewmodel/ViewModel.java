@@ -8,22 +8,20 @@ import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.i_no_am.viewmodel.config.Config;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.gui.screens.Screen;
-import org.lwjgl.glfw.GLFW;
 
 public class ViewModel implements ClientModInitializer, Global {
 
-    public static final KeyMapping BIND = KeyMappingHelper.registerKeyMapping(new KeyMapping("Toggle ViewModel GUI", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_V, KeyMapping.Category.MISC));
+    public static final KeyMapping BIND = KeyMappingHelper.registerKeyMapping(new KeyMapping("Toggle ViewModel GUI", InputConstants.KEY_V, KeyMapping.Category.MISC));
 
     @Override
     public void onInitializeClient() {
         MidnightConfig.init(modId, Config.class);
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            if (BIND.consumeClick() && mc.player != null) {
-                Screen screenConfig = Config.getScreen(mc.gui.screen(), modId);
-                mc.gui.setScreen(screenConfig);
-                if (screenConfig.shouldCloseOnEsc()) MidnightConfig.write(modId);
-            }
+            if (!BIND.consumeClick() || mc.player == null) return;
+            Screen screen = Config.getScreen(mc.gui.screen(), modId);
+            mc.gui.setScreen(screen);
+            if (screen.shouldCloseOnEsc()) MidnightConfig.write(modId);
         });
     }
 }

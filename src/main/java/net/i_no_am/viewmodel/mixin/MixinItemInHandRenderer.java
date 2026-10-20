@@ -1,138 +1,129 @@
 package net.i_no_am.viewmodel.mixin;
 
-import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
-import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.i_no_am.viewmodel.Global;
 import net.i_no_am.viewmodel.config.Config;
-import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.client.renderer.ItemInHandRenderer;
+import net.minecraft.client.renderer.FirstPersonHandsAndItemsRenderer;
 import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.state.level.FirstPersonHandsAndItemsRenderState;
+import net.minecraft.client.renderer.state.level.PlayerRenderState;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.HumanoidArm;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ItemUseAnimation;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyArg;
+import org.spongepowered.asm.mixin.injection.ModifyArgs;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
-@Mixin(ItemInHandRenderer.class)
+/**
+ * Handles the first person hands and items transforms: position, rotation and scale for
+ * both hands, the swing progress offsets and the custom eat and drink animation.
+ */
+@Mixin(FirstPersonHandsAndItemsRenderer.class)
 public abstract class MixinItemInHandRenderer implements Global {
 
-    @Shadow private ItemStack mainHandItem;
-
     @Inject(method = "submitArmWithItem", at = @At("HEAD"))
-    private void onRenderHandsPos(AbstractClientPlayer player, float frameInterp, float xRot, InteractionHand hand, float attack, ItemStack itemStack, float inverseArmHeight, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int lightCoords, CallbackInfo ci) {
-        poseStack.pushPose(); // pos/rot applied per-target: arm at renderPlayerArm, item at renderItem
-    }
-
-    @Unique
-    private void applyPosRot(InteractionHand hand, PoseStack poseStack) {
-        if (hand == InteractionHand.MAIN_HAND) {
-            poseStack.mulPose(Axis.XP.rotationDegrees(Config.mainRotationX));
-            poseStack.mulPose(Axis.YP.rotationDegrees(Config.mainRotationY));
-            poseStack.mulPose(Axis.ZP.rotationDegrees(Config.mainRotationZ));
-            poseStack.translate(Config.mainPositionX, Config.mainPositionY, Config.mainPositionZ);
-        } else {
-            poseStack.mulPose(Axis.XP.rotationDegrees(Config.offRotationX));
-            poseStack.mulPose(Axis.YP.rotationDegrees(Config.offRotationY));
-            poseStack.mulPose(Axis.ZP.rotationDegrees(Config.offRotationZ));
-            poseStack.translate(Config.offPositionX, Config.offPositionY, Config.offPositionZ);
-        }
+    private void pushArmPose(PlayerRenderState playerState, FirstPersonHandsAndItemsRenderState renderState, float partialTicks, float xRot, InteractionHand hand, float attack, ItemStack itemStack, float inverseArmHeight, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int lightCoords, CallbackInfo ci) {
+        poseStack.pushPose(); // transforms are applied per target: arm at renderPlayerArm, item at submit
     }
 
     @Inject(method = "submitArmWithItem", at = @At("TAIL"))
-    private void popMatrix(AbstractClientPlayer player, float frameInterp, float xRot, InteractionHand hand, float attack, ItemStack itemStack, float inverseArmHeight, PoseStack matrixStack, SubmitNodeCollector submitNodeCollector, int lightCoords, CallbackInfo ci) {
-        matrixStack.popPose();
+    private void popArmPose(PlayerRenderState playerState, FirstPersonHandsAndItemsRenderState renderState, float partialTicks, float xRot, InteractionHand hand, float attack, ItemStack itemStack, float inverseArmHeight, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int lightCoords, CallbackInfo ci) {
+        poseStack.popPose();
     }
 
-    @Inject(method = "submitArmWithItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/ItemInHandRenderer;renderItem(Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/item/ItemDisplayContext;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;I)V"))
-    private void scaleItems(AbstractClientPlayer player, float frameInterp, float xRot, InteractionHand hand, float swingProgress, ItemStack itemStack, float inverseArmHeight, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int lightCoords, CallbackInfo ci) {
-        if (Config.HandsMode != Config.HandsTarget.ARMS_ONLY) {
-            applyPosRot(hand, poseStack);
-            float scale = hand == InteractionHand.MAIN_HAND ? Config.mainHandScale : Config.offHandScale;
-            poseStack.scale(scale, scale, scale);
-        }
+    @Inject(method = "submitArmWithItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/item/ItemStackRenderState;submit(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;III)V"))
+    private void applyItemTransform(PlayerRenderState playerState, FirstPersonHandsAndItemsRenderState renderState, float partialTicks, float xRot, InteractionHand hand, float attack, ItemStack itemStack, float inverseArmHeight, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int lightCoords, CallbackInfo ci) {
+        if (Config.HandsMode == Config.HandsTarget.ARMS_ONLY) return;
+        applyHandTransform(hand, poseStack);
     }
 
-    @Inject(method = "submitArmWithItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/ItemInHandRenderer;renderPlayerArm(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;IFFLnet/minecraft/world/entity/HumanoidArm;)V"), cancellable = true)
-    private void noHands(AbstractClientPlayer player, float frameInterp, float xRot, InteractionHand hand, float attack, ItemStack itemStack, float inverseArmHeight, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int lightCoords, CallbackInfo ci) {
+    @Inject(method = "renderPlayerHand", at = @At("HEAD"))
+    private void applyArmTransform(PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int lightCoords, HumanoidArm arm, PlayerRenderState playerState, CallbackInfo ci) {
+        if (Config.HandsMode == Config.HandsTarget.HANDS_ONLY) return;
+        applyHandTransform(usedHand(), poseStack);
+    }
+
+    @Inject(method = "submitArmWithItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/FirstPersonHandsAndItemsRenderer;renderPlayerArm(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;IFFLnet/minecraft/world/entity/HumanoidArm;Lnet/minecraft/client/renderer/state/level/PlayerRenderState;)V"), cancellable = true)
+    private void hideArmsOnDemand(PlayerRenderState playerState, FirstPersonHandsAndItemsRenderState renderState, float partialTicks, float xRot, InteractionHand hand, float attack, ItemStack itemStack, float inverseArmHeight, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int lightCoords, CallbackInfo ci) {
         if (Config.noHandRender) {
             ci.cancel();
             return;
         }
-        if (Config.HandsMode != Config.HandsTarget.HANDS_ONLY) {
-            applyPosRot(hand, poseStack);
-            float scale = hand == InteractionHand.MAIN_HAND ? Config.mainHandScale : Config.offHandScale;
+        if (Config.HandsMode == Config.HandsTarget.HANDS_ONLY) return;
+        applyHandTransform(hand, poseStack);
+    }
+
+    @ModifyArgs(method = "submitHandsWithItems(FLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;Lnet/minecraft/client/renderer/state/level/PlayerRenderState;Lnet/minecraft/client/renderer/state/level/FirstPersonHandsAndItemsRenderState;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/FirstPersonHandsAndItemsRenderer;submitArmWithItem(Lnet/minecraft/client/renderer/state/level/PlayerRenderState;Lnet/minecraft/client/renderer/state/level/FirstPersonHandsAndItemsRenderState;FFLnet/minecraft/world/InteractionHand;FLnet/minecraft/world/item/ItemStack;FLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;I)V", ordinal = 0))
+    private void modifyMainHandSwing(Args args) {
+        ItemStack itemStack = args.get(6);
+        if (Config.swordSlash && itemStack.is(ItemTags.SWORDS)) {
+            args.set(5, 0.0F);
+        } else {
+            args.set(5, (float) args.get(5) + Config.mainSwingProgress);
+        }
+    }
+
+    @ModifyArgs(method = "submitHandsWithItems(FLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;Lnet/minecraft/client/renderer/state/level/PlayerRenderState;Lnet/minecraft/client/renderer/state/level/FirstPersonHandsAndItemsRenderState;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/FirstPersonHandsAndItemsRenderer;submitArmWithItem(Lnet/minecraft/client/renderer/state/level/PlayerRenderState;Lnet/minecraft/client/renderer/state/level/FirstPersonHandsAndItemsRenderState;FFLnet/minecraft/world/InteractionHand;FLnet/minecraft/world/item/ItemStack;FLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;I)V", ordinal = 1))
+    private void modifyOffHandSwing(Args args) {
+        args.set(5, (float) args.get(5) + Config.offSwingProgress);
+    }
+
+    @WrapMethod(method = "applyEatTransform")
+    private void applyEatingAnimation(PoseStack poseStack, float partialTicks, HumanoidArm arm, float useItemRemainingTicks, int useDuration, Operation<Void> original) {
+        if (Config.noFoodSwing) return;
+        if (Config.customEatAnim) {
+            applyCustomEatOrDrinkTransform(poseStack, partialTicks, arm, useItemRemainingTicks, useDuration);
+            return;
+        }
+        original.call(poseStack, partialTicks, arm, useItemRemainingTicks, useDuration);
+    }
+
+    @Unique
+    private static InteractionHand usedHand() {
+        return mc.player.getUsedItemHand();
+    }
+
+    @Unique
+    private static void applyHandTransform(InteractionHand hand, PoseStack poseStack) {
+        if (hand == InteractionHand.MAIN_HAND) {
+            poseStack.rotate(Axis.XP.rotationDegrees(Config.mainRotationX));
+            poseStack.rotate(Axis.YP.rotationDegrees(Config.mainRotationY));
+            poseStack.rotate(Axis.ZP.rotationDegrees(Config.mainRotationZ));
+            poseStack.translate(Config.mainPositionX, Config.mainPositionY, Config.mainPositionZ);
+            float scale = Config.mainHandScale;
+            poseStack.scale(scale, scale, scale);
+        } else {
+            poseStack.rotate(Axis.XP.rotationDegrees(Config.offRotationX));
+            poseStack.rotate(Axis.YP.rotationDegrees(Config.offRotationY));
+            poseStack.rotate(Axis.ZP.rotationDegrees(Config.offRotationZ));
+            poseStack.translate(Config.offPositionX, Config.offPositionY, Config.offPositionZ);
+            float scale = Config.offHandScale;
             poseStack.scale(scale, scale, scale);
         }
     }
 
-    @ModifyArg(method = "submitHandsWithItems(FLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;Lnet/minecraft/client/player/LocalPlayer;I)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/ItemInHandRenderer;submitArmWithItem(Lnet/minecraft/client/player/AbstractClientPlayer;FFLnet/minecraft/world/InteractionHand;FLnet/minecraft/world/item/ItemStack;FLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;I)V", ordinal = 0), index = 4)
-    private float modifyMainHandSwing(float swing) {
-        if (Config.swordSlash && mc.player != null && mainHandItem.is(ItemTags.SWORDS)) return 0f;
-        return swing + Config.mainSwingProgress;
-    }
-
-    @ModifyArg(method = "submitHandsWithItems(FLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;Lnet/minecraft/client/player/LocalPlayer;I)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/ItemInHandRenderer;submitArmWithItem(Lnet/minecraft/client/player/AbstractClientPlayer;FFLnet/minecraft/world/InteractionHand;FLnet/minecraft/world/item/ItemStack;FLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;I)V", ordinal = 1), index = 4)
-    private float modifyOffHandSwing(float swing) {
-        return swing + Config.offSwingProgress;
-    }
-
-
-    @ModifyReturnValue(method = "shouldInstantlyReplaceVisibleItem", at = @At("RETURN"))
-    private boolean skipSwapAnimation(boolean original) {
-        return original || Config.skipSwapping;
-    }
-
-    @WrapOperation(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/ItemInHandRenderer;shouldInstantlyReplaceVisibleItem(Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/item/ItemStack;)Z", ordinal = 0))
-    private boolean skipMainHandSwapAnimation(ItemInHandRenderer instance, ItemStack currentlyVisibleItem, ItemStack expectedItem, Operation<Boolean> original) {
-        return Config.oldAnimations || original.call(instance, currentlyVisibleItem, expectedItem);
-    }
-
-    @ModifyExpressionValue(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;getItemSwapScale(F)F"))
-    private float removeItemSwapScale(float original) {
-        return Config.oldAnimations ? 1.0F : original;
-    }
-
-    @WrapMethod(method = "applyEatTransform")
-    private void handleEatingAnimation(PoseStack poseStack, float frameInterp, HumanoidArm arm, ItemStack itemStack, Player player, Operation<Void> original) {
-        ItemUseAnimation action = itemStack.getUseAnimation();
-        if (action != ItemUseAnimation.EAT && action != ItemUseAnimation.DRINK) return;
-
-        if (Config.noFoodSwing) return;
-
-        if (Config.customEatAnim) {
-            applyCustomEatOrDrinkTransformation(poseStack, frameInterp, arm, itemStack);
-            return;
-        }
-
-        original.call(poseStack, frameInterp, arm, itemStack, player);
-    }
-
+    /**
+     * A custom swirl style eat and drink animation, replacing the vanilla one.
+     * The intensity sliders scale the horizontal and vertical part of the animation.
+     */
     @Unique
-    private void applyCustomEatOrDrinkTransformation(PoseStack poseStack, float frameInterp, HumanoidArm arm,  ItemStack stack) {
-        if (mc.player == null) return;
-
-        float maxUseTime = (float) stack.getUseDuration(mc.player);
+    private static void applyCustomEatOrDrinkTransform(PoseStack poseStack, float frameInterp, HumanoidArm arm, float useItemRemainingTicks, int useDuration) {
+        float maxUseTime = (float) useDuration;
         if (maxUseTime <= 0.0F) return;
 
-        float ticksProcessed = (maxUseTime - mc.player.getUseItemRemainingTicks()) + frameInterp;
+        float ticksProcessed = (maxUseTime - useItemRemainingTicks) + frameInterp;
         float progress = Mth.clamp(ticksProcessed / maxUseTime, 0.0F, 1.0F);
 
         float side = arm == HumanoidArm.RIGHT ? 1.0F : -1.0F;
-
         float t = ticksProcessed;
 
         float intro = smoothstep(0.00F, 0.18F, progress);
@@ -148,11 +139,11 @@ public abstract class MixinItemInHandRenderer implements Global {
         float y = -0.08F - 0.18F * intro - 0.16F * reach - 0.05F * finish + bob + flutter;
         float z = -0.02F - 0.08F * intro - 0.10F * reach - 0.04F * finish;
 
-        poseStack.translate(x, y, z);
+        poseStack.translate(x * Config.eatX, y * Config.eatY, z);
 
-        poseStack.mulPose(Axis.ZP.rotationDegrees(side * (4.0F + 10.0F * intro + 18.0F * finish + orbit * 8.0F)));
-        poseStack.mulPose(Axis.YP.rotationDegrees(side * (14.0F + 28.0F * intro + 42.0F * reach + 18.0F * finish)));
-        poseStack.mulPose(Axis.XP.rotationDegrees(6.0F + 10.0F * intro + 14.0F * finish + twist * 90.0F));
+        poseStack.rotate(Axis.ZP.rotationDegrees(side * (4.0F + 10.0F * intro + 18.0F * finish + orbit * 8.0F)));
+        poseStack.rotate(Axis.YP.rotationDegrees(side * (14.0F + 28.0F * intro + 42.0F * reach + 18.0F * finish)));
+        poseStack.rotate(Axis.XP.rotationDegrees(6.0F + 10.0F * intro + 14.0F * finish + twist * 90.0F));
 
         poseStack.translate(side * 0.015F * finish, 0.010F * finish, 0.0F);
     }
