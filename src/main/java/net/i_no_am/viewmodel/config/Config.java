@@ -5,15 +5,14 @@ import net.i_no_am.viewmodel.Global;
 
 public class Config extends MidnightConfig implements Global {
 
-    public final static String TRANSFORMS = "transforms";
-    public final static String SWING = "swing";
-    public final static String EATING = "eating";
-    public final static String MISC = "misc";
+    public static final String TRANSFORMS = "transforms";
+    public static final String SWING = "swing";
+    public static final String EATING = "eating";
+    public static final String MISC = "misc";
 
     public enum SwingState { DEFAULT, MAINHAND, OFFHAND }
     public enum HandsTarget { BOTH, HANDS_ONLY, ARMS_ONLY }
 
-    // todo: page 1
 
     @Comment(category = TRANSFORMS, centered = true, url = "https://modrinth.com/user/I-No-oNe")
     public static String credits;
@@ -39,7 +38,7 @@ public class Config extends MidnightConfig implements Global {
     @Entry(precision = 200, isSlider = true, category = TRANSFORMS, min = -45, max = 45, name = "Position Y")
     public static float mainPositionY = 0.0F;
 
-    @Entry(precision = 200, isSlider = true, category = TRANSFORMS, min = -30, max = 30,  name = "Position Z")
+    @Entry(precision = 200, isSlider = true, category = TRANSFORMS, min = -30, max = 30, name = "Position Z")
     public static float mainPositionZ = 0.0F;
 
     @Entry(precision = 200, isSlider = true, category = TRANSFORMS, min = -70, max = 70, name = "Rotation X (Pitch)")
@@ -63,7 +62,7 @@ public class Config extends MidnightConfig implements Global {
     @Entry(precision = 200, isSlider = true, category = TRANSFORMS, min = -45, max = 45, name = "Position Y")
     public static float offPositionY = 0.0F;
 
-    @Entry(precision = 200, isSlider = true, category = TRANSFORMS, min = -30, max = 30,  name = "Position Z")
+    @Entry(precision = 200, isSlider = true, category = TRANSFORMS, min = -30, max = 30, name = "Position Z")
     public static float offPositionZ = 0.0F;
 
     @Entry(precision = 200, isSlider = true, category = TRANSFORMS, min = -70, max = 70, name = "Rotation X (Pitch)")
@@ -75,7 +74,6 @@ public class Config extends MidnightConfig implements Global {
     @Entry(precision = 200, isSlider = true, category = TRANSFORMS, min = -60, max = 60, name = "Rotation Z (Roll)")
     public static float offRotationZ = 0.0F;
 
-    // todo: page 2
 
     @Comment(category = SWING, centered = true)
     public static String swingSettingsTitle;
@@ -101,7 +99,6 @@ public class Config extends MidnightConfig implements Global {
     @Entry(category = SWING, name = "Disable Swing Animation")
     public static boolean noHandSwing = false;
 
-    // todo: page 3
 
     @Comment(category = EATING, centered = true)
     public static String eatingTitle;
@@ -121,7 +118,6 @@ public class Config extends MidnightConfig implements Global {
     @Entry(precision = 100, isSlider = true, category = EATING, min = 0.0F, max = 3.0F, name = "Intensity Y")
     public static float eatY = 1.0F;
 
-    // todo: page 4
 
     @Comment(category = MISC, centered = true)
     public static String miscTitle;

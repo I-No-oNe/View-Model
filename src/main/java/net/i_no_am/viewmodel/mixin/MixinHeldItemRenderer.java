@@ -33,50 +33,29 @@ public abstract class MixinHeldItemRenderer implements Global {
     @Shadow private ItemStack mainHand;
 
     @Inject(method = "renderFirstPersonItem", at = @At("HEAD"))
-    private void onRenderHandsPos(AbstractClientPlayerEntity player, float tickProgress, float pitch, Hand hand, float swingProgress, ItemStack item, float equipProgress, MatrixStack matrixStack, OrderedRenderCommandQueue queue, int light, CallbackInfo ci) {
-        matrixStack.push(); // pos/rot applied per-target: arm at renderArmHoldingItem, item at renderItem
-    }
-
-    @Unique
-    private void applyPosRot(Hand hand, MatrixStack matrixStack) {
-        if (hand == Hand.MAIN_HAND) {
-            matrixStack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(Config.mainRotationX));
-            matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(Config.mainRotationY));
-            matrixStack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(Config.mainRotationZ));
-            matrixStack.translate(Config.mainPositionX, Config.mainPositionY, Config.mainPositionZ);
-        } else {
-            matrixStack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(Config.offRotationX));
-            matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(Config.offRotationY));
-            matrixStack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(Config.offRotationZ));
-            matrixStack.translate(Config.offPositionX, Config.offPositionY, Config.offPositionZ);
-        }
+    private void pushArmPose(AbstractClientPlayerEntity player, float tickProgress, float pitch, Hand hand, float swingProgress, ItemStack item, float equipProgress, MatrixStack matrixStack, OrderedRenderCommandQueue queue, int light, CallbackInfo ci) {
+        matrixStack.push(); // transforms are applied per target: arm at renderArmHoldingItem, item at renderItem
     }
 
     @Inject(method = "renderFirstPersonItem", at = @At("TAIL"))
-    private void popMatrix(AbstractClientPlayerEntity player, float tickProgress, float pitch, Hand hand, float swingProgress, ItemStack item, float equipProgress, MatrixStack matrixStack, OrderedRenderCommandQueue queue, int light, CallbackInfo ci) {
+    private void popArmPose(AbstractClientPlayerEntity player, float tickProgress, float pitch, Hand hand, float swingProgress, ItemStack item, float equipProgress, MatrixStack matrixStack, OrderedRenderCommandQueue queue, int light, CallbackInfo ci) {
         matrixStack.pop();
     }
 
     @Inject(method = "renderFirstPersonItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/item/HeldItemRenderer;renderItem(Lnet/minecraft/entity/LivingEntity;Lnet/minecraft/item/ItemStack;Lnet/minecraft/item/ItemDisplayContext;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/command/OrderedRenderCommandQueue;I)V"))
-    private void scaleItems(AbstractClientPlayerEntity player, float tickProgress, float pitch, Hand hand, float swingProgress, ItemStack item, float equipProgress, MatrixStack ms, OrderedRenderCommandQueue queue, int light, CallbackInfo ci) {
-        if (Config.HandsMode != Config.HandsTarget.ARMS_ONLY) {
-            applyPosRot(hand, ms);
-            float scale = hand == Hand.MAIN_HAND ? Config.mainHandScale : Config.offHandScale;
-            ms.scale(scale, scale, scale);
-        }
+    private void applyItemTransform(AbstractClientPlayerEntity player, float tickProgress, float pitch, Hand hand, float swingProgress, ItemStack item, float equipProgress, MatrixStack matrixStack, OrderedRenderCommandQueue queue, int light, CallbackInfo ci) {
+        if (Config.HandsMode == Config.HandsTarget.ARMS_ONLY) return;
+        applyHandTransform(hand, matrixStack);
     }
 
     @Inject(method = "renderFirstPersonItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/item/HeldItemRenderer;renderArmHoldingItem(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/command/OrderedRenderCommandQueue;IFFLnet/minecraft/util/Arm;)V"), cancellable = true)
-    private void noHands(AbstractClientPlayerEntity player, float tickProgress, float pitch, Hand hand, float swingProgress, ItemStack item, float equipProgress, MatrixStack matrices, OrderedRenderCommandQueue queue, int light, CallbackInfo ci) {
+    private void hideArmsOnDemand(AbstractClientPlayerEntity player, float tickProgress, float pitch, Hand hand, float swingProgress, ItemStack item, float equipProgress, MatrixStack matrixStack, OrderedRenderCommandQueue queue, int light, CallbackInfo ci) {
         if (Config.noHandRender) {
             ci.cancel();
             return;
         }
-        if (Config.HandsMode != Config.HandsTarget.HANDS_ONLY) {
-            applyPosRot(hand, matrices);
-            float scale = hand == Hand.MAIN_HAND ? Config.mainHandScale : Config.offHandScale;
-            matrices.scale(scale, scale, scale);
-        }
+        if (Config.HandsMode == Config.HandsTarget.HANDS_ONLY) return;
+        applyHandTransform(hand, matrixStack);
     }
 
     @ModifyArg(method = "renderItem(FLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/command/OrderedRenderCommandQueue;Lnet/minecraft/client/network/ClientPlayerEntity;I)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/item/HeldItemRenderer;renderFirstPersonItem(Lnet/minecraft/client/network/AbstractClientPlayerEntity;FFLnet/minecraft/util/Hand;FLnet/minecraft/item/ItemStack;FLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/command/OrderedRenderCommandQueue;I)V", ordinal = 0), index = 4)
@@ -90,6 +69,25 @@ public abstract class MixinHeldItemRenderer implements Global {
         return swing + Config.offSwingProgress;
     }
 
+
+    @Unique
+    private void applyHandTransform(Hand hand, MatrixStack matrixStack) {
+        if (hand == Hand.MAIN_HAND) {
+            matrixStack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(Config.mainRotationX));
+            matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(Config.mainRotationY));
+            matrixStack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(Config.mainRotationZ));
+            matrixStack.translate(Config.mainPositionX, Config.mainPositionY, Config.mainPositionZ);
+            float scale = Config.mainHandScale;
+            matrixStack.scale(scale, scale, scale);
+        } else {
+            matrixStack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(Config.offRotationX));
+            matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(Config.offRotationY));
+            matrixStack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(Config.offRotationZ));
+            matrixStack.translate(Config.offPositionX, Config.offPositionY, Config.offPositionZ);
+            float scale = Config.offHandScale;
+            matrixStack.scale(scale, scale, scale);
+        }
+    }
 
     @ModifyReturnValue(method = "shouldSkipHandAnimationOnSwap", at = @At("RETURN"))
     private boolean skipSwapAnimation(boolean original) {
@@ -148,7 +146,7 @@ public abstract class MixinHeldItemRenderer implements Global {
         float y = -0.08F - 0.18F * intro - 0.16F * reach - 0.05F * finish + bob + flutter;
         float z = -0.02F - 0.08F * intro - 0.10F * reach - 0.04F * finish;
 
-        matrices.translate(x, y, z);
+        matrices.translate(x * Config.eatX, y * Config.eatY, z);
 
         matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(side * (4.0F + 10.0F * intro + 18.0F * finish + orbit * 8.0F)));
         matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(side * (14.0F + 28.0F * intro + 42.0F * reach + 18.0F * finish)));
