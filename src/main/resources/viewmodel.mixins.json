@@ -1,0 +1,17 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "net.i_no_am.viewmodel.mixin",
+  "compatibilityLevel": "JAVA_25",
+  "mixins": [
+    "MixinLivingEntity"
+  ],
+  "client": [
+    "MixinFirstPersonHandsAndItems",
+    "MixinItemInHandRenderer",
+    "MixinMidnightSliderWidget"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
